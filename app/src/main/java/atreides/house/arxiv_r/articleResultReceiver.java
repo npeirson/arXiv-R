@@ -35,4 +35,3 @@ public class articleResultReceiver extends ResultReceiver {
     }
 
 }
-

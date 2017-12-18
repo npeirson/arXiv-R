@@ -14,5 +14,13 @@
 
     <!-- Card elements -->
     <dimen name="cardTextWidth">380dp</dimen>
-    <dimen name="cardPadding">4dp</dimen>
+    <dimen name="cardPadding">@dimen/standardPadding</dimen>
+
+    <!-- Search dialog elements -->
+    <dimen name="searchDialogHeight">400dp</dimen>
+    <dimen name="searchDialogWidth">300dp</dimen>
+    <dimen name="searchDialogFillet">10dp</dimen>
+
+    <!-- standardize -->
+    <dimen name="standardPadding">4dp</dimen>
 </resources>

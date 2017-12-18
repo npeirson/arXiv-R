@@ -7,10 +7,11 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,74 +21,77 @@ import java.util.List;
  * Created by the Kwisatz Haderach on 12/14/2017.
  */
 
-public class FirstFragment extends Fragment implements articleResultReceiver.Receiver {
-    // recyclerView variables
-        List<article> articleList;
-    // other variables
+public class FirstFragment extends Fragment{
     View myView;
-    public articleResultReceiver mReceiver;
+
     private RecyclerView mRecyclerView;
-    public ArrayList<String> results = new ArrayList<>(Arrays.asList("title","summary","author","published","updated"));
-    public ArrayList<String> mFeedModelList = new ArrayList<>(4);
+    //private SwipeRefreshLayout mSwipeLayout;
+    private TextView mFeedTitleTextView;
+    private TextView mFeedSummaryTextView;
+    private TextView mFeedAuthorTextView;
+    private TextView mFeedPublishedTextView;
+    private TextView mFeedUpdatedTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mReceiver = new articleResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
-        String category = "cs"; // explicit for easy swapping
-        // go fetch
-        Intent i = new Intent(FirstFragment.this.getActivity(), feedHandler.class);
-        i.putExtra("category",category);
-        i.putExtra("receiverName", mReceiver);
-        getActivity().startService(i);
+        Log.d("FirstFragment","Fragment Created!");
+        /**
+         Intent i = new Intent(getActivity(), MainActivity.class);
+         i.putExtra("receiverName", mReceiver);
+         getActivity().startActivityIfNeeded(i,0);
+         Log.d("FirstFragment","intent started <(o.o<)");
+         */
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.first_layout, container, false);
-        //mRecyclerView = myView.findViewById(R.id.recyclerView);
-        //mRecyclerView.setHasFixedSize(true);
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //mRecyclerView.setAdapter(new RssFeedListAdapter(results));
-        //mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
+        Log.d("FirstFragment", "onCreateView started");
+        // get the birdie
+        //Bundle resultData = getArguments();
+        //String mFeedTitle = getArguments().getString("test");
+        ParcelableArrayList pal = getArguments().getParcelable("articles");
+        //Log.d("FirstFragment", mFeedTitle);
+        Log.d("FirstFragment", pal.getThing().toString());
+
+
+        List<RssFeedModel> mFeedModelList = pal.getThing();
+
+        //String mFeedTitle = pal.getTitle();
+        //List<RssFeedModel> mFeedModelList = getArguments().getParcelable("articles");
+        //ArrayList<String> mResultData = resultData.getStringArrayList("contents");
+
         /**
-        xRecyclerView = myView.findViewById(R.id.recyclerView);
-        xRecyclerView.setHasFixedSize(true);
-        xRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        xLayoutManager = new LinearLayoutManager(getActivity());
+         String mFeedTitle = mResultData.get(0);
+         String mFeedSummary = mResultData.get(1);
+        String mFeedAuthor = mResultData.get(2);
+        String mFeedPublished = mResultData.get(3);
+        String mFeedUpdated = mResultData.get(4);
          */
-        //articleAdapter adapter = new articleAdapter(getContext(), articleList);
-        //RssFeedListAdapter adapter2 = new RssFeedListAdapter();
+        // set the birdie
+        myView = inflater.inflate(R.layout.first_layout, container, false);
+        mRecyclerView = myView.findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
+        mFeedTitleTextView = myView.findViewById(R.id.textViewTitle);
+        /**
+        mFeedSummaryTextView = (TextView) myView.findViewById(R.id.textViewSummary);
+        mFeedAuthorTextView = (TextView) myView.findViewById(R.id.textViewAuthors);
+        mFeedPublishedTextView = (TextView) myView.findViewById(R.id.textViewPublished);
+        mFeedUpdatedTextView = (TextView) myView.findViewById(R.id.textViewUpdated);
+         */
+        // show me the birdie
+        //mFeedTitleTextView.setText(mFeedTitle);
+        /**
+        mFeedSummaryTextView.setText(mFeedSummary);
+        mFeedAuthorTextView.setText(mFeedAuthor);
+        mFeedPublishedTextView.setText(mFeedPublished);
+        mFeedUpdatedTextView.setText(mFeedUpdated);
+         */
+        //mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
 
         return myView;
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-            mFeedModelList = resultData.getStringArrayList("mFeedModelList");
-            ArrayList<String> results = resultData.getStringArrayList("rssShit");
-            mRecyclerView = myView.findViewById(R.id.recyclerView);
-            mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mRecyclerView.setAdapter(new RssFeedListAdapter(results));
-
-            /**
-            articleList = new ArrayList<>();
-            articleList.add(
-                    new article(
-                            1,
-                            results.get(0),
-                            results.get(1),
-                            results.get(2),
-                            results.get(3),
-                            results.get(4)
-                    )
-
-            );
-             */
 
     }
 }

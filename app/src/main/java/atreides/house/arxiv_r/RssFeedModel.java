@@ -11,6 +11,7 @@ import java.util.ArrayList;
  * Thanks for sharing, obaro
  *
  * Customized by the Kwisatz Haderach on 15/12/2017.
+ * Most of this is probably unnecessary now
  */
 
 public class RssFeedModel extends ArrayList<String> implements Parcelable {

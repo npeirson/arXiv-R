@@ -1,23 +1,12 @@
 package atreides.house.arxiv_r;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.IntentService;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.ResultReceiver;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
@@ -31,10 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.Toast;
-
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
@@ -43,22 +29,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.System.in;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
-
     public List<RssFeedModel> mFeedModelList;
-    private String mFeedTitle;
-    private String mFeedSummary;
-    private String mFeedAuthor;
-    private String mFeedPublished;
-    private String mFeedUpdated;
-
     public String category;
-    public ResultReceiver receiver;
+    public String mFeedTitle;
+    public String mFeedSummary;
+    public String mFeedAuthor;
+    public String mFeedPublished;
+    public String mFeedUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +54,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
-                Log.d("FAB","Fabulous!");
+                Log.d("FAB", "Fabulous!");
                 Dialog searchDialog = new Dialog(MainActivity.this);
                 searchDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 searchDialog.setContentView(R.layout.fab_search_layout);
@@ -84,9 +65,7 @@ public class MainActivity extends AppCompatActivity
                 //new FetchFeedTask().execute((Void) null);
             }
         });
-        // fab sub-action menu
 
-        // other stuff
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -95,17 +74,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        /**
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        //mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mFeedTitleTextView = (TextView) findViewById(R.id.textViewTitle);
-        mFeedSummaryTextView = (TextView) findViewById(R.id.textViewSummary);
-        mFeedAuthorTextView = (TextView) findViewById(R.id.textViewAuthors);
-        mFeedPublishedTextView = (TextView) findViewById(R.id.textViewPublished);
-        mFeedUpdatedTextView = (TextView) findViewById(R.id.textViewUpdated);
-        */
-
-
     }
 
     @Override
@@ -144,15 +112,12 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_first_layout) {
             category = "cs";
-            new FetchFeedTask().execute((Void) null);
             // fetch articles
-
-            // start fragment
+            new FetchFeedTask().execute((Void) null);
 
         } else if (id == R.id.nav_second_layout) {
             category = "math";
@@ -271,14 +236,7 @@ public class MainActivity extends AppCompatActivity
             mFeedAuthor = "author";
             mFeedPublished = "published";
             mFeedUpdated = "updated";
-            /**
-            mFeedTitleTextView.setText(mFeedTitle);
-            mFeedSummaryTextView.setText(mFeedSummary);
-            mFeedAuthorTextView.setText(mFeedAuthor);
-            mFeedPublishedTextView.setText(mFeedPublished);
-            mFeedUpdatedTextView.setText(mFeedUpdated);
-             */
-            //urlLink = new String ("http://export.arxiv.org/api/query?search_query=cat:"+category+"*&max_results=1");
+
             Log.d("MainActivity","Category (when it counts) = "+category);
             urlLink = ("http://export.arxiv.org/api/query?search_query=cat:"+category+"*&max_results=2");
         }
@@ -310,15 +268,7 @@ public class MainActivity extends AppCompatActivity
 
             if (success) {
                 sendMessenger();
-                /**
-                mFeedTitleTextView.setText(mFeedTitle);
-                mFeedSummaryTextView.setText(mFeedSummary);
-                mFeedAuthorTextView.setText(mFeedAuthor);
-                mFeedPublishedTextView.setText(mFeedPublished);
-                mFeedUpdatedTextView.setText(mFeedUpdated);
-                // Fill RecyclerView
-                mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
-                 */
+
             } else {
                 Toast.makeText(MainActivity.this,
                         "Enter a valid Rss feed url",
@@ -326,21 +276,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-    /**
-    public class intentHandler extends IntentService {
-        public intentHandler(){
-            super(intentHandler.class.getName());
-        }
 
-        @Override
-        protected void onHandleIntent(Intent intent) {
-            intent = getIntent();
-            Log.d("MainActivity","intent received!");
-            receiver = intent.getParcelableExtra("receiverName");
-            new FetchFeedTask().execute((Void) null);
-        }
-    }
-        */
     private void sendMessenger() {
         Log.d("MainActivity","sending message...");
         String test = "Rubber Duckies are the SHIT";
@@ -362,23 +298,4 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         } else { Log.d("MainActivity", "It's null"); }
     }
-
-
-
-        /**
-        Bundle bundle = new Bundle();
-        ArrayList<String> contents = new ArrayList<>();
-        contents.add(0,mFeedTitle);
-        contents.add(1,mFeedSummary);
-        contents.add(2,mFeedAuthor);
-        contents.add(3,mFeedPublished);
-        contents.add(4,mFeedUpdated);
-
-        bundle.putParcelableArrayList("mFeed", (ArrayList<? extends Parcelable>) mFeedModelList);
-        bundle.putStringArrayList("contents",contents);
-        receiver.send(1,bundle);
-
-        //((MainActivity) getActivity()).getResult();
-        */
-
 }

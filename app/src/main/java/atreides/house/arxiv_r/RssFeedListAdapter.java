@@ -38,7 +38,7 @@ public class RssFeedListAdapter
     @Override
     public FeedModelViewHolder onCreateViewHolder(ViewGroup parent, int type) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_layout, parent, false); //was item_rss_feed
+                .inflate(R.layout.list_layout, parent, false);
         FeedModelViewHolder holder = new FeedModelViewHolder(v);
         return holder;
     }

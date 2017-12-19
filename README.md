@@ -11,11 +11,14 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 #### Remaining tasks:
 - Finish designing custom search dialog
 - Add sub-section filtering
+- Favorites
 - "More articles" card
 - Make articles accessible
 - Make the actual widget, yo. You know, the whole reason you started this timesink in the first place.
+- Sharing
 - Expand to all categories
 
 #### Additional features:
 If I have time...
 - favorites
+- history

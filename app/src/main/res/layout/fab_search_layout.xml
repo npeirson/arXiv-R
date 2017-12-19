@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/searchDialogWidth"
+    android:layout_height="@dimen/searchDialogHeight"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_pretty">
+
+    <TextView
+        android:id="@+id/searchHeaderTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:text="@string/searchHeader"
+        android:textSize="@dimen/textview_big_0_size"
+        android:textStyle="bold" />
+
+
+
+</LinearLayout>

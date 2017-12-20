@@ -7,9 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import java.util.List;
 
 
@@ -17,22 +17,20 @@ import java.util.List;
  * Created by the Kwisatz Haderach on 12/14/2017.
  */
 
-public class FirstFragment extends Fragment{
+public class FirstFragment extends Fragment {
     View myView;
 
     private RecyclerView mRecyclerView;
-    //private SwipeRefreshLayout mSwipeLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("FirstFragment","Fragment Created!");
+        Log.d("FirstFragment", "Fragment Created!");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("FirstFragment", "onCreateView started");
         ParcelableArrayList pal = getArguments().getParcelable("articles");
         Log.d("FirstFragment", pal.getThing().toString());
 
@@ -42,8 +40,8 @@ public class FirstFragment extends Fragment{
         mRecyclerView = myView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
-
         return myView;
-
+        //touch event?
+        //myView.findViewById(R.id.textViewSummary).setVisibility(View.VISIBLE);
     }
 }

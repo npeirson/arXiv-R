@@ -2,6 +2,7 @@ package atreides.house.arxiv_r;
 
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -41,11 +42,12 @@ public class MainActivity extends AppCompatActivity
     public String mFeedPublished;
     public String mFeedUpdated;
 
-    @Override
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+            setTheme(R.style.AppTheme_NoActionBar);
+            super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -55,30 +57,30 @@ public class MainActivity extends AppCompatActivity
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
                 Log.d("FAB", "Fabulous!");
-                Dialog searchDialog = new Dialog(MainActivity.this);
-                searchDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                searchDialog.setContentView(R.layout.fab_search_layout);
-                searchDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                searchDialog.show();
+                Dialog generalDialog = new Dialog(MainActivity.this);
+                generalDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                generalDialog.setContentView(R.layout.search_layout);
+                generalDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                generalDialog.show();
 
                 //category = "cs";
                 //new FetchFeedTask().execute((Void) null);
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -103,26 +105,39 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            FragmentManager fragmentManager = getFragmentManager();
+            SettingsFragment newFragment = new SettingsFragment();
+            setTitle("Settings");
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame
+                            , newFragment)
+                    .commit();
+        }
+        if (id == R.id.action_about) {
+            Dialog generalDialog = new Dialog(MainActivity.this);
+            generalDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            generalDialog.setContentView(R.layout.action_about_layout);
+            generalDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            generalDialog.show();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    // How about making a function for category, set title, etc? Keep it contained.
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
+            int id = item.getItemId();
 
         if (id == R.id.nav_first_layout) {
             category = "cs";
-            // fetch articles
             new FetchFeedTask().execute((Void) null);
-
+            setTitle("Computer Science");
         } else if (id == R.id.nav_second_layout) {
             category = "math";
             new FetchFeedTask().execute((Void) null);
-
+            setTitle("Mathematics");
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -133,7 +148,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -207,9 +222,7 @@ public class MainActivity extends AppCompatActivity
                         mFeedAuthor = author;
                         mFeedPublished = published;
                         mFeedUpdated = updated;
-                        Log.d("MainActivity","fallback");
                     }
-                    Log.d("MainActivity","reset to null");
                     title = null;
                     summary = null;
                     author = null;
@@ -225,12 +238,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
     private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
-
         private String urlLink;
+        Dialog loadingBlip = new Dialog(MainActivity.this);
 
         @Override
         protected void onPreExecute() {
-            //mSwipeLayout.setRefreshing(true);
+            // pls wait for load my dude
+            loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            loadingBlip.setContentView(R.layout.loading_blip);
+            loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            loadingBlip.show();
+
             mFeedTitle = "title";
             mFeedSummary = "summary";
             mFeedAuthor = "author";
@@ -238,7 +256,7 @@ public class MainActivity extends AppCompatActivity
             mFeedUpdated = "updated";
 
             Log.d("MainActivity","Category (when it counts) = "+category);
-            urlLink = ("http://export.arxiv.org/api/query?search_query=cat:"+category+"*&max_results=2");
+            urlLink = ("http://export.arxiv.org/api/query?search_query=cat:"+category+"*&max_results=10");
         }
 
         @Override
@@ -264,14 +282,13 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Boolean success) {
-            //mSwipeLayout.setRefreshing(false);
-
             if (success) {
+                loadingBlip.dismiss();
                 sendMessenger();
 
             } else {
                 Toast.makeText(MainActivity.this,
-                        "Enter a valid Rss feed url",
+                        "Internet connectivity questionable...",
                         Toast.LENGTH_LONG).show();
             }
         }

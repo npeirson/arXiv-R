@@ -33,6 +33,7 @@
                 android:padding="@dimen/cardPadding"
                 android:textSize="@dimen/textview_small_size"
                 android:layout_below="@id/textViewTitle"
+                android:visibility="gone"
                 />
             
             <TextView
@@ -45,19 +46,21 @@
 
             <TextView
                 android:id="@+id/textViewPublished"
-                android:layout_width="@dimen/cardTextWidth"
+                android:layout_width="@dimen/cardTextHalfWidth"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/textViewAuthors"
+                android:gravity="start"
                 android:padding="@dimen/cardPadding"
-                android:textSize="@dimen/textview_small_size"
-                android:layout_below="@id/textViewAuthors" />
+                android:textSize="@dimen/textview_small_size" />
 
             <TextView
                 android:id="@+id/textViewUpdated"
-                android:layout_width="@dimen/cardTextWidth"
-                android:padding="@dimen/cardPadding"
-                android:textSize="@dimen/textview_small_size"
+                android:layout_width="@dimen/cardTextHalfWidth"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textViewPublished" />
+                android:layout_below="@id/textViewAuthors"
+                android:layout_toEndOf="@id/textViewPublished"
+                android:padding="@dimen/cardPadding"
+                android:textSize="@dimen/textview_small_size" />
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

@@ -1,13 +1,13 @@
 package atreides.house.arxiv_r;
 
-        import android.support.v7.widget.RecyclerView;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.TextView;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-        import java.util.List;
+import java.util.List;
 
 /**
  * Created by obaro on 27/11/2016.
@@ -28,6 +28,19 @@ public class RssFeedListAdapter
         public FeedModelViewHolder(View v) {
             super(v);
             rssFeedView = v;
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    int sumState = itemView.findViewById(R.id.textViewSummary).getVisibility();
+                    if (sumState != 0) {
+                        itemView.findViewById(R.id.textViewSummary).setVisibility(itemView.VISIBLE);
+                    } else {
+                        itemView.findViewById(R.id.textViewSummary).setVisibility(itemView.GONE);
+                    }
+                }
+            });
         }
     }
 
@@ -46,17 +59,15 @@ public class RssFeedListAdapter
     @Override
     public void onBindViewHolder(FeedModelViewHolder holder, int position) {
         final RssFeedModel rssFeedModel = mRssFeedModels.get(position);
-        Log.d("Adapter","feed model position = " + rssFeedModel);
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewTitle)).setText(rssFeedModel.title);
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewSummary)).setText(rssFeedModel.summary);
-        ((TextView)holder.rssFeedView.findViewById(R.id.textViewAuthors)).setText(rssFeedModel.author);
-        ((TextView)holder.rssFeedView.findViewById(R.id.textViewPublished)).setText(rssFeedModel.published);
-        ((TextView)holder.rssFeedView.findViewById(R.id.textViewUpdated)).setText(rssFeedModel.updated);
+        ((TextView)holder.rssFeedView.findViewById(R.id.textViewAuthors)).setText(rssFeedModel.author); // TODO dynamic adaptation
+        ((TextView)holder.rssFeedView.findViewById(R.id.textViewPublished)).setText("Published: " + rssFeedModel.published);
+        ((TextView)holder.rssFeedView.findViewById(R.id.textViewUpdated)).setText("Updated: " + rssFeedModel.updated);
     }
 
     @Override
     public int getItemCount() {
-        Log.d("Adapter","Item count = "+ mRssFeedModels.size());
         return mRssFeedModels.size();
     }
 

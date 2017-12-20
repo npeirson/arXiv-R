@@ -9,11 +9,21 @@
     <!-- Text size variants -->
     <dimen name="textview_small_size">11sp</dimen>
     <dimen name="textview_middle_size">13sp</dimen>
+    <dimen name="textview_middle_plus_size">16sp</dimen>
     <dimen name="textview_big_0_size">21sp</dimen>
     <dimen name="textview_big_1_size">30sp</dimen>
 
+    <!-- standardize -->
+    <dimen name="standardPadding">4dp</dimen>
+    <dimen name="doublePadding">8dp</dimen>
+    <dimen name="triplePadding">12dp</dimen>
+    <dimen name="quadPadding">16dp</dimen>
+    <dimen name="standardDialogWidth">300dp</dimen>
+    <dimen name="standardDialogTextWidth">280dp</dimen>
+
     <!-- Card elements -->
     <dimen name="cardTextWidth">380dp</dimen>
+    <dimen name="cardTextHalfWidth">190dp</dimen>
     <dimen name="cardPadding">@dimen/standardPadding</dimen>
 
     <!-- Search dialog elements -->
@@ -21,6 +31,11 @@
     <dimen name="searchDialogWidth">300dp</dimen>
     <dimen name="searchDialogFillet">10dp</dimen>
 
-    <!-- standardize -->
-    <dimen name="standardPadding">4dp</dimen>
+    <!-- Settings elements -->
+    <dimen name="settingsTextSize">@dimen/textview_middle_plus_size</dimen>
+
+    <!-- Loading blip -->
+    <dimen name="blipHeight">70dp</dimen>
+    <dimen name="blipWidth">225dp</dimen>
+
 </resources>

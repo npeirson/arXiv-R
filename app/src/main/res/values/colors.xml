@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Standard android studio colors
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    -->
 
+    <!-- Main Scheme -->
+    <color name="colorPrimary">#B31B1B</color>
+    <color name="colorPrimaryDark">#9d1818</color>
+    <color name="colorPrimaryDarker">#871414</color>
+    <color name="colorPrimaryLight">#c91e1e</color>
+    <color name="colorPrimaryLighter">#de2323</color>
+    <color name="colorAccent">#0068AC</color>
+
+    <!-- Basic things... -->
     <color name="white">#FFF</color>
+    <color name="lightGray">#e1e1e1</color>
 </resources>

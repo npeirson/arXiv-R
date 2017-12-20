@@ -13,8 +13,13 @@
         android:layout_marginTop="@dimen/standardPadding"
         android:text="@string/searchHeader"
         android:textSize="@dimen/textview_big_0_size"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textAlignment="center"/>
 
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/standardPadding"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
 </LinearLayout>

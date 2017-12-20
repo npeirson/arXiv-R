@@ -8,10 +8,15 @@ It's far from done, I assure you.
 
 Also, this is my first project in Java, so code tips and suggestions are very welcome.
 
+#### Currently working on:
+- Favorites
+- Local storage
+- Check last upddate
+- Auto-update
+
 #### Remaining tasks:
 - Finish designing custom search dialog
 - Add sub-section filtering
-- Favorites
 - "More articles" card
 - Make articles accessible
 - Make the actual widget, yo. You know, the whole reason you started this timesink in the first place.
@@ -20,5 +25,4 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 
 #### Additional features:
 If I have time...
-- favorites
 - history

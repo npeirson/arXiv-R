@@ -5,6 +5,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- actionbar titles -->
+    <string name="settingsTitle">Settings</string>
+    <string name="favoritesTitle">Favorites</string>
+    <string name="favoritesAddTitle">Add Favorites</string>
+
     <!-- action menu -->
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>

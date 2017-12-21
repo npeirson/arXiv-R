@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import java.util.List;
 
-
 /**
  * Created by the Kwisatz Haderach on 12/14/2017.
  */
@@ -41,7 +40,5 @@ public class FirstFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
         return myView;
-        //touch event?
-        //myView.findViewById(R.id.textViewSummary).setVisibility(View.VISIBLE);
     }
 }

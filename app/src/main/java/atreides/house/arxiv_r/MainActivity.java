@@ -2,7 +2,6 @@ package atreides.house.arxiv_r;
 
 import android.app.Dialog;
 import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
-                Log.d("FAB", "Fabulous!");
                 Dialog generalDialog = new Dialog(MainActivity.this);
                 generalDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 generalDialog.setContentView(R.layout.search_layout);
@@ -106,11 +104,12 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             FragmentManager fragmentManager = getFragmentManager();
-            SettingsFragment newFragment = new SettingsFragment();
-            setTitle("Settings");
+            SettingsFragment nf = new SettingsFragment();
+
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , newFragment)
+                            , nf)
+                    .addToBackStack(null)
                     .commit();
         }
         if (id == R.id.action_about) {
@@ -247,6 +246,7 @@ public class MainActivity extends AppCompatActivity
             loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
             loadingBlip.setContentView(R.layout.loading_blip);
             loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
             loadingBlip.show();
 
             mFeedTitle = "title";
@@ -285,22 +285,19 @@ public class MainActivity extends AppCompatActivity
             if (success) {
                 loadingBlip.dismiss();
                 sendMessenger();
-
             } else {
                 Toast.makeText(MainActivity.this,
-                        "Internet connectivity questionable...",
+                        "Questionable internet connectivity...",
                         Toast.LENGTH_LONG).show();
             }
         }
     }
 
     private void sendMessenger() {
-        Log.d("MainActivity","sending message...");
-        String test = "Rubber Duckies are the SHIT";
+        String test = "Rubber duckies are the SHIT";
         FragmentManager fragmentManager = getFragmentManager();
         FirstFragment newFragment = new FirstFragment();
         ParcelableArrayList pal = new ParcelableArrayList();
-        Log.d("MainActivity", mFeedModelList.toString());
         pal.setThing(mFeedModelList);
         pal.setTitle(test);
         Bundle bundle = new Bundle();
@@ -308,10 +305,10 @@ public class MainActivity extends AppCompatActivity
         bundle.putString("test", test);
         if (bundle != null) {
             newFragment.setArguments(bundle);
-            Log.d("MainActivity", "Argument set...");
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
                             , newFragment)
+                    .addToBackStack(null)
                     .commit();
         } else { Log.d("MainActivity", "It's null"); }
     }

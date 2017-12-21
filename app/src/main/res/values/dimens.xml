@@ -33,6 +33,7 @@
 
     <!-- Settings elements -->
     <dimen name="settingsTextSize">@dimen/textview_middle_plus_size</dimen>
+    <dimen name="settingsButtonHeight">64dp</dimen>
 
     <!-- Loading blip -->
     <dimen name="blipHeight">70dp</dimen>

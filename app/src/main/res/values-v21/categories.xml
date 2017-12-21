@@ -1,0 +1,8 @@
+<resources>
+    <!-- main categories -->
+    <string-array name="categories">
+        <item>Astrophysics</item>
+        <item>Condensed Matter</item>
+    </string-array>
+
+</resources>

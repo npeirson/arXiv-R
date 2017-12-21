@@ -17,4 +17,6 @@
     <!-- Basic things... -->
     <color name="white">#FFF</color>
     <color name="lightGray">#e1e1e1</color>
+
+    <color name="loadingDim">#64969696</color>
 </resources>

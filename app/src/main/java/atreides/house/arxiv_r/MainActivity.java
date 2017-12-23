@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
@@ -23,11 +22,21 @@ import android.view.Window;
 import android.widget.Toast;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.net.ssl.HttpsURLConnection;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,10 +50,10 @@ public class MainActivity extends AppCompatActivity
     public String mFeedPublished;
     public String mFeedUpdated;
 
-        @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-            setTheme(R.style.AppTheme_NoActionBar);
-            super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme_NoActionBar);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -127,12 +136,12 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-            int id = item.getItemId();
+        int id = item.getItemId();
 
         if (id == R.id.nav_first_layout) {
             category = "cs";
-            new FetchFeedTask().execute((Void) null);
             setTitle("Computer Science");
+            checkExists();
         } else if (id == R.id.nav_second_layout) {
             category = "math";
             new FetchFeedTask().execute((Void) null);
@@ -172,18 +181,18 @@ public class MainActivity extends AppCompatActivity
                 int eventType = xmlPullParser.getEventType();
 
                 String name = xmlPullParser.getName();
-                if(name == null)
+                if (name == null)
                     continue;
 
-                if(eventType == XmlPullParser.END_TAG) {
-                    if(name.equalsIgnoreCase("entry")) {
+                if (eventType == XmlPullParser.END_TAG) {
+                    if (name.equalsIgnoreCase("entry")) {
                         isItem = false;
                     }
                     continue;
                 }
 
                 if (eventType == XmlPullParser.START_TAG) {
-                     if(name.equalsIgnoreCase("entry")) {
+                    if (name.equalsIgnoreCase("entry")) {
                         isItem = true;
                         continue;
                     }
@@ -208,14 +217,13 @@ public class MainActivity extends AppCompatActivity
                 } else if (name.equalsIgnoreCase("updated")) {
                     updated = result;
                 }
-                Log.d("MainActivity","title = " + title + "\nsummary = " + summary + "\nauthor = " + author);
+                Log.d("MainActivity", "title = " + title + "\nsummary = " + summary + "\nauthor = " + author);
                 if (title != null && summary != null && author != null) {
-                    if(isItem) {
+                    if (isItem) {
                         RssFeedModel item = new RssFeedModel(title, summary, author, published, updated);
                         items.add(item);
-                        Log.d("MainActivity","item added");
-                    }
-                    else {
+                        Log.d("MainActivity", "item added");
+                    } else {
                         mFeedTitle = title;
                         mFeedSummary = summary;
                         mFeedAuthor = author;
@@ -236,6 +244,7 @@ public class MainActivity extends AppCompatActivity
             inputStream.close();
         }
     }
+
     private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
         private String urlLink;
         Dialog loadingBlip = new Dialog(MainActivity.this);
@@ -255,23 +264,20 @@ public class MainActivity extends AppCompatActivity
             mFeedPublished = "published";
             mFeedUpdated = "updated";
 
-            Log.d("MainActivity","Category (when it counts) = "+category);
-            urlLink = ("http://export.arxiv.org/api/query?search_query=cat:"+category+"*&max_results=10");
+            Log.d("MainActivity", "Category (when it counts) = " + category);
+            urlLink = ("https://export.arxiv.org/api/query?search_query=cat:" + category + "*&max_results=2");
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            if (TextUtils.isEmpty(urlLink))
-                return false;
 
             try {
-                if (!urlLink.startsWith("http://") && !urlLink.startsWith("https://"))
-                    urlLink = "http://" + urlLink;
-
                 URL url = new URL(urlLink);
-                InputStream inputStream = url.openConnection().getInputStream();
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                InputStream inputStream = conn.getInputStream();
                 mFeedModelList = parseFeed(inputStream);
                 return true;
+
             } catch (IOException e) {
                 Log.e(TAG, "Error", e);
             } catch (XmlPullParserException e) {
@@ -282,6 +288,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Boolean success) {
+            Log.d("postexecute","has begun");
             if (success) {
                 loadingBlip.dismiss();
                 sendMessenger();
@@ -294,12 +301,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void sendMessenger() {
+
+        try {
+            FileOutputStream fos = this.openFileOutput(category + "File", MODE_PRIVATE);
+            ObjectOutputStream of = new ObjectOutputStream(fos);
+            of.writeObject(mFeedModelList);
+            of.flush();
+            of.close();
+            fos.close();
+            Log.d("sendMessenger","Closed");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String test = "Rubber duckies are the SHIT";
         FragmentManager fragmentManager = getFragmentManager();
         FirstFragment newFragment = new FirstFragment();
         ParcelableArrayList pal = new ParcelableArrayList();
         pal.setThing(mFeedModelList);
         pal.setTitle(test);
+        Log.d("sendMessenger", String.valueOf(mFeedModelList));
         Bundle bundle = new Bundle();
         bundle.putParcelable("articles", pal);
         bundle.putString("test", test);
@@ -310,6 +331,62 @@ public class MainActivity extends AppCompatActivity
                             , newFragment)
                     .addToBackStack(null)
                     .commit();
-        } else { Log.d("MainActivity", "It's null"); }
+        } else {
+            Log.d("MainActivity", "It's null");
+        }
     }
+
+    private void checkExists() {
+
+        // see if file exists
+        File catFile = getApplicationContext().getFileStreamPath(category + "File");
+        if (catFile == null || !catFile.exists()) {
+            Log.d("redundancy checker","doesn't exist");
+            // This means we should write a new one
+            new FetchFeedTask().execute((Void) null);
+        } else {
+            Log.d("redundancy checker","exists");
+
+            // file exists, so check date
+            SimpleDateFormat df = new SimpleDateFormat("MMdd");
+            Date todayDate = new Date();
+            Date lastModDate = new Date(catFile.lastModified());
+            String today = df.format(todayDate);
+            String lastMod = df.format(lastModDate);
+
+            if (Integer.parseInt(today) != Integer.parseInt(lastMod)) {
+                // outdated, get new
+                Log.d("wat",today +" is today and last mod is " + lastMod);
+                Log.d("redundancy checker","outdated, fetching new data");
+                new FetchFeedTask().execute((Void) null);
+
+            } else {
+                // current, send cached
+                Log.d("redundancy checker","current");
+
+                ArrayList<RssFeedModel> cachedData;
+                FileInputStream fis;
+                try {
+                    fis = this.openFileInput(category + "File");
+                    ObjectInputStream oi = new ObjectInputStream(fis);
+                    cachedData = (ArrayList<RssFeedModel>) oi.readObject();
+                    oi.close();
+                    mFeedModelList = cachedData;
+                } catch (FileNotFoundException e) {
+                    Log.e("InternalStorage", e.getMessage());
+                } catch (IOException e) {
+                    Log.e("InternalStorage", e.getMessage());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Log.d("redundancy checker","sending old info");
+                sendMessenger();
+            }
+
+        }
+    }
+
 }
+
+
+

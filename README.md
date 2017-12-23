@@ -12,14 +12,13 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 - Favorites
 - Auto-update
 - Settings
+- Make articles accessible
 
 #### Remaining tasks:
 - Finish designing custom search dialog
 - Add sub-section filtering
 - "More articles" card
-- Make articles accessible
 - Make the actual widget, yo. You know, the whole reason you started this timesink in the first place.
-- Sharing
 - Expand to all categories
 
 #### Additional features:
@@ -31,3 +30,4 @@ If I have time...
 - Card expansion
 - Local storage
 - Check last update
+- Sharing

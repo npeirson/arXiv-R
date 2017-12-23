@@ -10,9 +10,8 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 
 #### Currently working on:
 - Favorites
-- Local storage
-- Check last upddate
 - Auto-update
+- Settings
 
 #### Remaining tasks:
 - Finish designing custom search dialog
@@ -26,3 +25,9 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 #### Additional features:
 If I have time...
 - history
+
+#### Done
+- Recyclerview
+- Card expansion
+- Local storage
+- Check last update

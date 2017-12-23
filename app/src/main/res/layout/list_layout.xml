@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/cardView">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -61,6 +62,78 @@
                 android:layout_toEndOf="@id/textViewPublished"
                 android:padding="@dimen/cardPadding"
                 android:textSize="@dimen/textview_small_size" />
+            
+            <Button
+                android:id="@+id/buttonBookmark"
+                android:background="@drawable/button_clean_left"
+                android:layout_width="@dimen/cardButtonsWidth"
+                android:layout_height="@dimen/cardButtonHeight"
+                android:layout_below="@id/textViewPublished"
+                android:layout_gravity="start"
+                android:layout_marginEnd="2dp"
+                android:layout_marginTop="@dimen/standardPadding"
+                android:padding="@dimen/standardPadding"
+                android:gravity="center"
+                android:textSize="@dimen/textview_middle_plus_size"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:text="@string/bookmark"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/buttonShare"
+                android:background="@drawable/button_clean"
+                android:layout_width="@dimen/cardButtonsWidth"
+                android:layout_height="@dimen/cardButtonHeight"
+                android:layout_below="@id/textViewUpdated"
+                android:layout_toEndOf="@id/buttonBookmark"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/standardPadding"
+                android:padding="@dimen/standardPadding"
+                android:gravity="center"
+                android:textSize="@dimen/textview_middle_plus_size"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:text="@string/share"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/buttonDownload"
+                android:background="@drawable/button_clean_right"
+                android:layout_width="@dimen/cardButtonsWidth"
+                android:layout_height="@dimen/cardButtonHeight"
+                android:layout_below="@id/textViewUpdated"
+                android:layout_toEndOf="@+id/buttonShare"
+                android:layout_alignEnd="@id/textViewUpdated"
+                android:layout_gravity="end"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="@dimen/standardPadding"
+                android:padding="@dimen/standardPadding"
+                android:gravity="center"
+                android:textSize="@dimen/textview_middle_plus_size"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:text="@string/download"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/buttonRead"
+                android:background="@drawable/button_clean_right"
+                android:layout_width="@dimen/cardButtonsWidth"
+                android:layout_height="@dimen/cardButtonHeight"
+                android:layout_below="@id/textViewUpdated"
+                android:layout_toEndOf="@+id/buttonShare"
+                android:layout_alignEnd="@id/textViewUpdated"
+                android:layout_gravity="end"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="@dimen/standardPadding"
+                android:padding="@dimen/standardPadding"
+                android:gravity="center"
+                android:textSize="@dimen/textview_middle_plus_size"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:text="@string/open"
+                android:visibility="gone"/>
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

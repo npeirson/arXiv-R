@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.Toast;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity
             checkExists();
         } else if (id == R.id.nav_second_layout) {
             category = "math";
-            new FetchFeedTask().execute((Void) null);
+            checkExists();
             setTitle("Mathematics");
         } else if (id == R.id.nav_slideshow) {
 
@@ -337,7 +338,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void checkExists() {
-
         // see if file exists
         File catFile = getApplicationContext().getFileStreamPath(category + "File");
         if (catFile == null || !catFile.exists()) {

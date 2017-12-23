@@ -25,6 +25,9 @@
     <dimen name="cardTextWidth">380dp</dimen>
     <dimen name="cardTextHalfWidth">190dp</dimen>
     <dimen name="cardPadding">@dimen/standardPadding</dimen>
+    <dimen name="cardButtonsWidth">123dp</dimen>
+    <dimen name="cardButtonFillet">10dp</dimen>
+    <dimen name="cardButtonHeight">40dp</dimen>
 
     <!-- Search dialog elements -->
     <dimen name="searchDialogHeight">400dp</dimen>

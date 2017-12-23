@@ -22,4 +22,10 @@
     <string name="searchHeader">search arXiv</string>
     <string name="aboutHeader">about this app</string>
 
+    <!-- card items -->
+    <string name="bookmark">bookmark</string>
+    <string name="share">share</string>
+    <string name="download">download</string>
+    <string name="open">read it</string>
+
 </resources>

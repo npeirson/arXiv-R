@@ -12,11 +12,15 @@
     <color name="colorPrimaryDarker">#871414</color>
     <color name="colorPrimaryLight">#c91e1e</color>
     <color name="colorPrimaryLighter">#de2323</color>
+    <color name="colorPrimaryAlpha">#c8b31b1b</color>
     <color name="colorAccent">#0068AC</color>
+    <color name="colorAccentLight">#1977b4</color>
+    <color name="colorAccentLighter">#3286bc</color>
 
     <!-- Basic things... -->
     <color name="white">#FFF</color>
     <color name="lightGray">#e1e1e1</color>
+    <color name="darkGray">#5b5b5b</color>
 
     <color name="loadingDim">#64969696</color>
 </resources>

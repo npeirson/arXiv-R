@@ -11,15 +11,14 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 #### Currently working on:
 - Favorites
 - Auto-update
-- Settings
-- Make articles accessible
+- Settings activity. This should be an activity.
 
 #### Remaining tasks:
 - Finish designing custom search dialog
 - Add sub-section filtering
 - "More articles" card
 - Make the actual widget, yo. You know, the whole reason you started this timesink in the first place.
-- Expand to all categories
+- Expand to all fields and categories (remember pdf thing)
 
 #### Additional features:
 If I have time...
@@ -31,3 +30,4 @@ If I have time...
 - Local storage
 - Check last update
 - Sharing
+- Make articles accessible

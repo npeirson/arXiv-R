@@ -117,6 +117,25 @@
                 android:visibility="gone"/>
 
             <Button
+                android:id="@+id/buttonDownloading"
+                android:background="@drawable/button_clean_right"
+                android:layout_width="@dimen/cardButtonsWidth"
+                android:layout_height="@dimen/cardButtonHeight"
+                android:layout_below="@id/textViewUpdated"
+                android:layout_toEndOf="@+id/buttonShare"
+                android:layout_alignEnd="@id/textViewUpdated"
+                android:layout_gravity="end"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="@dimen/standardPadding"
+                android:padding="@dimen/standardPadding"
+                android:gravity="center"
+                android:textSize="@dimen/textview_middle_plus_size"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:text="@string/downloading"
+                android:visibility="gone"/>
+
+            <Button
                 android:id="@+id/buttonRead"
                 android:background="@drawable/button_clean_right"
                 android:layout_width="@dimen/cardButtonsWidth"

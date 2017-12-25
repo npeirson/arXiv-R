@@ -33,6 +33,8 @@
     <dimen name="searchDialogHeight">400dp</dimen>
     <dimen name="searchDialogWidth">300dp</dimen>
     <dimen name="searchDialogFillet">10dp</dimen>
+    <dimen name="searchSpinnerWidth">125dp</dimen>
+    <dimen name="searchEditTextWidth">250dp</dimen>
 
     <!-- Settings elements -->
     <dimen name="settingsTextSize">@dimen/textview_middle_plus_size</dimen>

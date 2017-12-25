@@ -26,4 +26,10 @@ public class SearchFragment extends Fragment {
         myView = inflater.inflate(R.layout.search_layout, container, false);
         return myView;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.searchTitle);
+    }
 }

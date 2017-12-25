@@ -9,6 +9,7 @@
     <string name="settingsTitle">Settings</string>
     <string name="favoritesTitle">Favorites</string>
     <string name="favoritesAddTitle">Add Favorites</string>
+    <string name="searchTitle">Search arXiv</string>
 
     <!-- action menu -->
     <string name="action_settings">Settings</string>
@@ -28,5 +29,140 @@
     <string name="download">download</string>
     <string name="downloading">downloading...</string>
     <string name="open">read it</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_header_basic">Basic</string>
+    <string name="pref_header_advanced">Advanced</string>
+    <string name="pref_header_widget">Widget</string>
+    <string name="pref_header_card_layout">Card Layout</string>
+    <string name="pref_header_accessibility">Accessibility</string>
+    <string name="pref_header_favorites">Favorites</string>
+
+    <string name="pref_summary_favorites">Add / Remove Categories</string>
+    <string name="pref_summary_notifications"></string>
+    <string name="pref_summary_data_sync"></string>
+    <string name="pref_summary_widget"></string>
+    <string name="pref_summary_card_layout">Customize article card contents</string>
+    <string name="pref_summary_accessibility"></string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- Search string -->
+    <string-array name="search_subject_array">
+        <item>All Subject Areas</item>
+        <item>Physics</item>
+        <item>Mathematics</item>
+        <item>Computer Science</item>
+        <item>Quantitative Biology</item>
+        <item>Quantitative Finance</item>
+        <item>Statistics</item>
+        <item>Electrical Engineering and System Science</item>
+        <item>Economics</item>
+    </string-array>
+
+    <string-array name="search_subject_physics_array">
+        <item>All Physics</item>
+        <item>astro-ph</item>
+        <item>cond-mat</item>
+        <item>gr-qc</item>
+        <item>hep-ex</item>
+        <item>hep-lat</item>
+        <item>hep-ph</item>
+        <item>hep-th</item>
+        <item>math-ph</item>
+        <item>nlin</item>
+        <item>nucl-ex</item>
+        <item>nucl-th</item>
+        <item>physics</item>
+        <item>quant-ph</item>
+    </string-array>
+
+    <string-array name="search_spinner_array">
+        <item>Author(s):</item>
+        <item>Title:</item>
+        <item>Abstract:</item>
+        <item>Full Record:</item>
+        <item>Category:</item>
+        <item>Primary Category:</item>
+        <item>Subject Descriptions:</item>
+        <item>Comments:</item>
+        <item>Journal-ref:</item>
+        <item>ACM/MSC Class:</item>
+        <item>Report-no</item>
+        <item>Identifier</item>
+    </string-array>
+
+    <string name="search_subject_prompt">Select Category</string>
+    <string name="search_subject_physics_prompt">Select Physics Subcategory</string>
+    <string name="search_spinner_prompt">Select</string>
 
 </resources>

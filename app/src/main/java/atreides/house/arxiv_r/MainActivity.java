@@ -3,6 +3,7 @@ package atreides.house.arxiv_r;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -73,8 +74,19 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FragmentManager fragmentManager = getFragmentManager();
+                SearchFragment newFragment = new SearchFragment();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame
+                                    , newFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+                /*
+
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
+
                 Dialog generalDialog = new Dialog(MainActivity.this);
                 generalDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 generalDialog.setContentView(R.layout.search_layout);
@@ -84,6 +96,7 @@ public class MainActivity extends AppCompatActivity
                 //category = "cs";
                 //new FetchFeedTask().execute((Void) null);
             }
+                 */
         });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -123,14 +136,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            FragmentManager fragmentManager = getFragmentManager();
-            SettingsFragment nf = new SettingsFragment();
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame
-                            , nf)
-                    .addToBackStack(null)
-                    .commit();
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
         if (id == R.id.action_about) {
             Dialog generalDialog = new Dialog(MainActivity.this);
@@ -324,7 +331,6 @@ public class MainActivity extends AppCompatActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         String test = "Rubber duckies are the SHIT";
         FragmentManager fragmentManager = getFragmentManager();
         FirstFragment newFragment = new FirstFragment();
@@ -392,7 +398,6 @@ public class MainActivity extends AppCompatActivity
                 Log.d("redundancy checker","sending old info");
                 sendMessenger();
             }
-
         }
     }
     @Override

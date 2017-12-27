@@ -9,7 +9,7 @@ It's far from done, I assure you.
 Also, this is my first project in Java, so code tips and suggestions are very welcome.
 
 #### Currently working on:
-- Finish designing custom search dialog
+- Bookmarks
 
 #### Remaining tasks:
 - Favorites
@@ -17,9 +17,9 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 - "More articles" card
 - Make the actual widget, yo. You know, the whole reason you started this timesink in the first place.
 - Expand to all fields and categories (remember pdf thing)
-- Bookmarks
 - Icon
 - Auto-update
+- URL standardization
 
 #### Done
 - Recyclerview
@@ -30,3 +30,4 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 - Make articles accessible
 - Store and ope PDFs
 - Settings activity. This should be an activity.
+- Finish designing custom search dialog

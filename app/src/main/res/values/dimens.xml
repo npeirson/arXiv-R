@@ -18,6 +18,7 @@
     <dimen name="doublePadding">8dp</dimen>
     <dimen name="triplePadding">12dp</dimen>
     <dimen name="quadPadding">16dp</dimen>
+    <dimen name="morePadding">20dp</dimen>
     <dimen name="standardDialogWidth">300dp</dimen>
     <dimen name="standardDialogTextWidth">280dp</dimen>
 

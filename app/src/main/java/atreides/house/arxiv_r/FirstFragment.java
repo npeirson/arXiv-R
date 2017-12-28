@@ -29,7 +29,6 @@ public class FirstFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("FirstFragment", "Fragment Created!");
         this.requestPermissions(PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
     }
 
@@ -37,7 +36,6 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ParcelableArrayList pal = getArguments().getParcelable("articles");
-        Log.d("FirstFragment", pal.getThing().toString());
 
         List<RssFeedModel> mFeedModelList = pal.getThing();
 

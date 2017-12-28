@@ -151,15 +151,12 @@
         <item>Author(s):</item>
         <item>Title:</item>
         <item>Abstract:</item>
-        <item>Full Record:</item>
         <item>Category:</item>
-        <item>Primary Category:</item>
-        <item>Subject Descriptions:</item>
         <item>Comments:</item>
         <item>Journal-ref:</item>
-        <item>ACM/MSC Class:</item>
         <item>Report-no</item>
         <item>Identifier</item>
+        <item>All of the above</item>
     </string-array>
 
     <string name="search_subject_prompt">Select Category</string>

@@ -56,12 +56,11 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                     if (searchSubjectSpinner.getSelectedItemPosition() == 1) {
                         myView.findViewById(R.id.search_subject_physics_spinner).setVisibility(View.VISIBLE);
                     } else {
-                        if (searchSubjectSpinner.getSelectedItemPosition() == 1) {
                             myView.findViewById(R.id.search_subject_physics_spinner).setVisibility(View.GONE);
                         }
                     }
                 }
-            }
+
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {

@@ -25,6 +25,7 @@
 
     <!-- card items -->
     <string name="bookmark">bookmark</string>
+    <string name="bookmarked">bookmarked</string>
     <string name="share">share</string>
     <string name="download">download</string>
     <string name="downloading">downloading...</string>

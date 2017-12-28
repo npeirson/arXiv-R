@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
-import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,17 +13,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
  * Created by the Kwisatz Haderach on 16/12/2017
  *
- * Used some pieces created by obaro on 27/11/2016.
- * Check him out: https://github.com/obaro/
- * Thanks for sharing, obaro
+ * Used pieces from a lot of people
+ * Check out the acknowledgements section in "about"
  */
 
 public class RssFeedListAdapter
@@ -56,18 +58,102 @@ public class RssFeedListAdapter
                         // workaround for dynamic button text
                         String docname = "test13";
                         File docfile = new File((Environment.getExternalStorageDirectory() + "/arXiv/" + docname + ".pdf"));
-                        Log.d("download"," ------ >>>>>" + docfile.exists());
+                        Log.d("download", " ------ >>>>>" + docfile.exists());
                         if (docfile.exists()) {
                             itemView.findViewById(R.id.buttonRead).setVisibility(itemView.VISIBLE);
                         } else {
                             itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.VISIBLE);
                         }
 
+                        // bookmark dynamics
+                        final RssFeedModel cardId = mRssFeedModels.get(getAdapterPosition());
+                        final String trimmed = cardId.id.replace("http://arxiv.org/abs/","");
+                        // does bookmark exist?
+                        final File bmFile = new File(itemView.getContext().getFilesDir().getAbsolutePath() + "/bookmarks");
+                        FileInputStream fis = null;
+                        try{
+                            fis = new FileInputStream(bmFile);
+                            byte fileContent[] = new byte[(int)bmFile.length()];
+                            fis.read(fileContent);
+                            String bm = new String(fileContent);
+                            if (bm.contains(trimmed)){
+                                // change to bookmarked state
+                                itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.VISIBLE);
+                            } else {
+                                itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.VISIBLE);
+                            }
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            try{
+                                if (fis != null) {
+                                    fis.close();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                         // bookmark button press
                         itemView.findViewById(R.id.buttonBookmark).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Log.d("you pressed it","noob face");
+                        FileOutputStream fos = null;
+                        FileInputStream fin = null;
+                                try {
+                                    fin = new FileInputStream(bmFile);
+                                    byte fileContent[] = new byte[(int)bmFile.length()];
+                                    fin.read(fileContent);
+                                    String bm = new String(fileContent);
+                                    fos = new FileOutputStream(bmFile);
+                                    String add = bm + "\n" + trimmed;
+                                    fos.write(add.getBytes());
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.VISIBLE);
+                                    //itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.GONE); // for some reason this flips out??
+                                    try {
+                                        fin.close();
+                                        fos.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+
+                        itemView.findViewById(R.id.buttonBookmarked).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                FileOutputStream fos = null;
+                                FileInputStream fin = null;
+                                try {
+                                    fin = new FileInputStream(bmFile);
+                                    byte fileContent[] = new byte[(int)bmFile.length()];
+                                    fin.read(fileContent);
+                                    String bm = new String(fileContent);
+                                    fos = new FileOutputStream(bmFile);
+                                    String remove = bm.replace("\n" + trimmed, "");
+                                    fos.write(remove.getBytes());
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.VISIBLE);
+                                    itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.GONE);
+                                    try {
+                                        fin.close();
+                                        fos.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         });
 
@@ -122,6 +208,7 @@ public class RssFeedListAdapter
                         // collapse view
                         itemView.findViewById(R.id.textViewSummary).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.GONE);
+                        itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonShare).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonRead).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.GONE);
@@ -188,7 +275,7 @@ public class RssFeedListAdapter
             XrssFeedView.findViewById(R.id.buttonDownloading).setVisibility(XrssFeedView.GONE);
             XrssFeedView.findViewById(R.id.buttonRead).setVisibility(XrssFeedView.VISIBLE);
         }
-    };
+    }
 }
 
 

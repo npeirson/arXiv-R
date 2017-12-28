@@ -43,7 +43,6 @@ import java.util.Date;
 import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -55,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     public String mFeedAuthor;
     public String mFeedPublished;
     public String mFeedUpdated;
+    public String mFeedId;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -69,6 +69,28 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         ActivityCompat.requestPermissions(this,PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+
+        // create bookmarks file if non exists
+        File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
+        if (bmFile == null || !bmFile.exists()) {
+            new File("bookmarks");
+            FileOutputStream bos = null;
+            String binit = "bookmarks:";
+            try {
+                bos = new FileOutputStream(bmFile);
+                bos.write(binit.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (bos != null) {
+                        bos.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +138,6 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-
         }
     }
 
@@ -146,7 +167,6 @@ public class MainActivity extends AppCompatActivity
             generalDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             generalDialog.show();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -179,13 +199,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
     public List<RssFeedModel> parseFeed(InputStream inputStream) throws XmlPullParserException, IOException {
         String title = null;
         String summary = null;
         String author = null;
         String published = null;
         String updated = null;
+        String id = null;
         boolean isItem = false;
         List<RssFeedModel> items = new ArrayList<>();
 
@@ -234,11 +254,13 @@ public class MainActivity extends AppCompatActivity
                     published = result;
                 } else if (name.equalsIgnoreCase("updated")) {
                     updated = result;
+                } else if (name.equalsIgnoreCase("id")) {
+                    id = result;
                 }
                 Log.d("MainActivity", "title = " + title + "\nsummary = " + summary + "\nauthor = " + author);
                 if (title != null && summary != null && author != null) {
                     if (isItem) {
-                        RssFeedModel item = new RssFeedModel(title, summary, author, published, updated);
+                        RssFeedModel item = new RssFeedModel(title, summary, author, published, updated, id);
                         items.add(item);
                         Log.d("MainActivity", "item added");
                     } else {
@@ -247,6 +269,7 @@ public class MainActivity extends AppCompatActivity
                         mFeedAuthor = author;
                         mFeedPublished = published;
                         mFeedUpdated = updated;
+                        mFeedId = id;
                     }
                     title = null;
                     summary = null;
@@ -281,9 +304,10 @@ public class MainActivity extends AppCompatActivity
             mFeedAuthor = "author";
             mFeedPublished = "published";
             mFeedUpdated = "updated";
+            mFeedId = "id";
 
             Log.d("MainActivity", "Category (when it counts) = " + category);
-            urlLink = ("https://export.arxiv.org/api/query?search_query=cat:" + category + "*&max_results=2");
+            urlLink = ("https://export.arxiv.org/api/query?search_query=cat:" + category + "*&max_results=5");
         }
 
         @Override
@@ -387,6 +411,7 @@ public class MainActivity extends AppCompatActivity
                     ObjectInputStream oi = new ObjectInputStream(fis);
                     cachedData = (ArrayList<RssFeedModel>) oi.readObject();
                     oi.close();
+                    fis.close(); // hmmmm
                     mFeedModelList = cachedData;
                 } catch (FileNotFoundException e) {
                     Log.e("InternalStorage", e.getMessage());

@@ -21,13 +21,15 @@ public class RssFeedModel extends ArrayList<String> implements Parcelable {
     public String author;
     public String published;
     public String updated;
+    public String id;
 
-    public RssFeedModel(String title, String summary, String author, String published, String updated) {
+    public RssFeedModel(String title, String summary, String author, String published, String updated, String id) {
         this.title = title;
         this.summary = summary;
         this.author = author;
         this.published = published;
         this.updated = updated;
+        this.id = id;
     }
 
     public RssFeedModel(Parcel parcel){
@@ -36,6 +38,7 @@ public class RssFeedModel extends ArrayList<String> implements Parcelable {
         author = parcel.readString();
         published = parcel.readString();
         updated = parcel.readString();
+        id = parcel.readString();
     }
 
     @Override
@@ -50,6 +53,7 @@ public class RssFeedModel extends ArrayList<String> implements Parcelable {
         out.writeString(this.author);
         out.writeString(this.published);
         out.writeString(this.updated);
+        out.writeString(this.id);
     }
 
     public static final Parcelable.Creator<RssFeedModel> CREATOR=new Parcelable.Creator<RssFeedModel>() {
@@ -69,10 +73,12 @@ public class RssFeedModel extends ArrayList<String> implements Parcelable {
     public void setAuthor(String author) { this.author = author; }
     public void setPublished(String published) { this.published = published; }
     public void setUpdated(String updated) { this.updated = updated; }
+    public void setId(String id) { this.id = id; }
 
     public String getTitle() { return title; }
     public String getSummary() { return summary; }
     public String getAuthor() { return author; }
     public String getPublished() { return published; }
     public String getUpdated() { return updated; }
+    public String getId() { return id; }
 }

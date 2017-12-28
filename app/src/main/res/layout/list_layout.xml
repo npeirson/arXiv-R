@@ -81,6 +81,23 @@
                 android:visibility="gone"/>
 
             <Button
+                android:id="@+id/buttonBookmarked"
+                android:background="@drawable/button_marked_left"
+                android:layout_width="@dimen/cardButtonsWidth"
+                android:layout_height="@dimen/cardButtonHeight"
+                android:layout_below="@id/textViewPublished"
+                android:layout_gravity="start"
+                android:layout_marginEnd="2dp"
+                android:layout_marginTop="@dimen/standardPadding"
+                android:padding="@dimen/standardPadding"
+                android:gravity="center"
+                android:textSize="@dimen/textview_middle_plus_size"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:text="@string/bookmarked"
+                android:visibility="gone"/>
+
+            <Button
                 android:id="@+id/buttonShare"
                 android:background="@drawable/button_clean"
                 android:layout_width="@dimen/cardButtonsWidth"

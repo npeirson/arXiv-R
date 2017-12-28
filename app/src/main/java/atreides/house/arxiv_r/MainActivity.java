@@ -1,13 +1,17 @@
 package atreides.house.arxiv_r;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.text.TextUtils;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
@@ -20,14 +24,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.Toast;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,50 +54,90 @@ public class MainActivity extends AppCompatActivity
     public String mFeedAuthor;
     public String mFeedPublished;
     public String mFeedUpdated;
+    public String mFeedId;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ActivityCompat.requestPermissions(this,PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+
+        // create bookmarks file if non exists
+        File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
+        if (bmFile == null || !bmFile.exists()) {
+            new File("bookmarks");
+            FileOutputStream bos = null;
+            String binit = "bookmarks:";
+            try {
+                bos = new FileOutputStream(bmFile);
+                bos.write(binit.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (bos != null) {
+                        bos.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FragmentManager fragmentManager = getFragmentManager();
+                SearchFragment newFragment = new SearchFragment();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame
+                                    , newFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+                /*
+
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
-                Log.d("FAB", "Fabulous!");
-                Dialog searchDialog = new Dialog(MainActivity.this);
-                searchDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                searchDialog.setContentView(R.layout.fab_search_layout);
-                searchDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                searchDialog.show();
+
+                Dialog generalDialog = new Dialog(MainActivity.this);
+                generalDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                generalDialog.setContentView(R.layout.search_layout);
+                generalDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                generalDialog.show();
 
                 //category = "cs";
                 //new FetchFeedTask().execute((Void) null);
             }
+                 */
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-
         }
     }
 
@@ -103,12 +157,20 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
-
+        if (id == R.id.action_about) {
+            Dialog generalDialog = new Dialog(MainActivity.this);
+            generalDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            generalDialog.setContentView(R.layout.action_about_layout);
+            generalDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            generalDialog.show();
+        }
         return super.onOptionsItemSelected(item);
     }
 
+    // How about making a function for category, set title, etc? Keep it contained.
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -116,13 +178,12 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_first_layout) {
             category = "cs";
-            // fetch articles
-            new FetchFeedTask().execute((Void) null);
-
+            setTitle("Computer Science");
+            checkExists();
         } else if (id == R.id.nav_second_layout) {
             category = "math";
-            new FetchFeedTask().execute((Void) null);
-
+            checkExists();
+            setTitle("Mathematics");
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -133,11 +194,10 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
     public List<RssFeedModel> parseFeed(InputStream inputStream) throws XmlPullParserException, IOException {
         String title = null;
@@ -145,6 +205,7 @@ public class MainActivity extends AppCompatActivity
         String author = null;
         String published = null;
         String updated = null;
+        String id = null;
         boolean isItem = false;
         List<RssFeedModel> items = new ArrayList<>();
 
@@ -158,18 +219,18 @@ public class MainActivity extends AppCompatActivity
                 int eventType = xmlPullParser.getEventType();
 
                 String name = xmlPullParser.getName();
-                if(name == null)
+                if (name == null)
                     continue;
 
-                if(eventType == XmlPullParser.END_TAG) {
-                    if(name.equalsIgnoreCase("entry")) {
+                if (eventType == XmlPullParser.END_TAG) {
+                    if (name.equalsIgnoreCase("entry")) {
                         isItem = false;
                     }
                     continue;
                 }
 
                 if (eventType == XmlPullParser.START_TAG) {
-                     if(name.equalsIgnoreCase("entry")) {
+                    if (name.equalsIgnoreCase("entry")) {
                         isItem = true;
                         continue;
                     }
@@ -193,23 +254,23 @@ public class MainActivity extends AppCompatActivity
                     published = result;
                 } else if (name.equalsIgnoreCase("updated")) {
                     updated = result;
+                } else if (name.equalsIgnoreCase("id")) {
+                    id = result;
                 }
-                Log.d("MainActivity","title = " + title + "\nsummary = " + summary + "\nauthor = " + author);
+                Log.d("MainActivity", "title = " + title + "\nsummary = " + summary + "\nauthor = " + author);
                 if (title != null && summary != null && author != null) {
-                    if(isItem) {
-                        RssFeedModel item = new RssFeedModel(title, summary, author, published, updated);
+                    if (isItem) {
+                        RssFeedModel item = new RssFeedModel(title, summary, author, published, updated, id);
                         items.add(item);
-                        Log.d("MainActivity","item added");
-                    }
-                    else {
+                        Log.d("MainActivity", "item added");
+                    } else {
                         mFeedTitle = title;
                         mFeedSummary = summary;
                         mFeedAuthor = author;
                         mFeedPublished = published;
                         mFeedUpdated = updated;
-                        Log.d("MainActivity","fallback");
+                        mFeedId = id;
                     }
-                    Log.d("MainActivity","reset to null");
                     title = null;
                     summary = null;
                     author = null;
@@ -224,36 +285,41 @@ public class MainActivity extends AppCompatActivity
             inputStream.close();
         }
     }
-    private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
 
+    private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
         private String urlLink;
+        Dialog loadingBlip = new Dialog(MainActivity.this);
 
         @Override
         protected void onPreExecute() {
-            //mSwipeLayout.setRefreshing(true);
+            // pls wait for load my dude
+            loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            loadingBlip.setContentView(R.layout.loading_blip);
+            loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            loadingBlip.show();
+
             mFeedTitle = "title";
             mFeedSummary = "summary";
             mFeedAuthor = "author";
             mFeedPublished = "published";
             mFeedUpdated = "updated";
+            mFeedId = "id";
 
-            Log.d("MainActivity","Category (when it counts) = "+category);
-            urlLink = ("http://export.arxiv.org/api/query?search_query=cat:"+category+"*&max_results=2");
+            Log.d("MainActivity", "Category (when it counts) = " + category);
+            urlLink = ("https://export.arxiv.org/api/query?search_query=cat:" + category + "*&max_results=5");
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            if (TextUtils.isEmpty(urlLink))
-                return false;
 
             try {
-                if (!urlLink.startsWith("http://") && !urlLink.startsWith("https://"))
-                    urlLink = "http://" + urlLink;
-
                 URL url = new URL(urlLink);
-                InputStream inputStream = url.openConnection().getInputStream();
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                InputStream inputStream = conn.getInputStream();
                 mFeedModelList = parseFeed(inputStream);
                 return true;
+
             } catch (IOException e) {
                 Log.e(TAG, "Error", e);
             } catch (XmlPullParserException e) {
@@ -264,38 +330,112 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Boolean success) {
-            //mSwipeLayout.setRefreshing(false);
-
+            Log.d("postexecute","has begun");
             if (success) {
+                loadingBlip.dismiss();
                 sendMessenger();
-
             } else {
                 Toast.makeText(MainActivity.this,
-                        "Enter a valid Rss feed url",
+                        "Questionable internet connectivity...",
                         Toast.LENGTH_LONG).show();
             }
         }
     }
 
     private void sendMessenger() {
-        Log.d("MainActivity","sending message...");
-        String test = "Rubber Duckies are the SHIT";
+
+        try {
+            FileOutputStream fos = this.openFileOutput(category + "File", MODE_PRIVATE);
+            ObjectOutputStream of = new ObjectOutputStream(fos);
+            of.writeObject(mFeedModelList);
+            of.flush();
+            of.close();
+            fos.close();
+            Log.d("sendMessenger","Closed");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String test = "Rubber duckies are the SHIT";
         FragmentManager fragmentManager = getFragmentManager();
         FirstFragment newFragment = new FirstFragment();
         ParcelableArrayList pal = new ParcelableArrayList();
-        Log.d("MainActivity", mFeedModelList.toString());
         pal.setThing(mFeedModelList);
         pal.setTitle(test);
+        Log.d("sendMessenger", String.valueOf(mFeedModelList));
         Bundle bundle = new Bundle();
         bundle.putParcelable("articles", pal);
         bundle.putString("test", test);
         if (bundle != null) {
             newFragment.setArguments(bundle);
-            Log.d("MainActivity", "Argument set...");
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
                             , newFragment)
+                    .addToBackStack(null)
                     .commit();
-        } else { Log.d("MainActivity", "It's null"); }
+        } else {
+            Log.d("MainActivity", "It's null");
+        }
+    }
+
+    private void checkExists() {
+        // see if file exists
+        File catFile = getApplicationContext().getFileStreamPath(category + "File");
+        if (catFile == null || !catFile.exists()) {
+            Log.d("redundancy checker","doesn't exist");
+            // This means we should write a new one
+            new FetchFeedTask().execute((Void) null);
+        } else {
+            Log.d("redundancy checker","exists");
+
+            // file exists, so check date
+            SimpleDateFormat df = new SimpleDateFormat("MMdd");
+            Date todayDate = new Date();
+            Date lastModDate = new Date(catFile.lastModified());
+            String today = df.format(todayDate);
+            String lastMod = df.format(lastModDate);
+
+            if (Integer.parseInt(today) != Integer.parseInt(lastMod)) {
+                // outdated, get new
+                Log.d("wat",today +" is today and last mod is " + lastMod);
+                Log.d("redundancy checker","outdated, fetching new data");
+                new FetchFeedTask().execute((Void) null);
+
+            } else {
+                // current, send cached
+                Log.d("redundancy checker","current");
+
+                ArrayList<RssFeedModel> cachedData;
+                FileInputStream fis;
+                try {
+                    fis = this.openFileInput(category + "File");
+                    ObjectInputStream oi = new ObjectInputStream(fis);
+                    cachedData = (ArrayList<RssFeedModel>) oi.readObject();
+                    oi.close();
+                    fis.close(); // hmmmm
+                    mFeedModelList = cachedData;
+                } catch (FileNotFoundException e) {
+                    Log.e("InternalStorage", e.getMessage());
+                } catch (IOException e) {
+                    Log.e("InternalStorage", e.getMessage());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Log.d("redundancy checker","sending old info");
+                sendMessenger();
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
     }
 }
+
+
+

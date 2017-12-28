@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/doublePadding"> <!-- feeling extra thicc today -->
+
+    <Spinner
+        android:id="@+id/search_subject_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/quadPadding"
+        android:entries="@array/search_subject_array"
+        android:prompt="@string/search_subject_prompt"/>
+    <Spinner
+        android:id="@+id/search_subject_physics_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/search_subject_spinner"
+        android:padding="@dimen/quadPadding"
+        android:visibility="gone"
+        android:entries="@array/search_subject_physics_array"
+        android:prompt="@string/search_subject_physics_prompt"/>
+    <!-- first query line -->
+    <Spinner
+        android:id="@+id/search_spinner1"
+        android:layout_width="@dimen/searchSpinnerWidth"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/search_edittext1"
+        android:layout_alignParentStart="true"
+        android:entries="@array/search_spinner_array"
+        android:padding="@dimen/doublePadding"
+        android:prompt="@string/search_spinner_prompt" />
+    <EditText
+        android:id="@+id/search_edittext1"
+        android:layout_width="@dimen/searchEditTextWidth"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/search_spinner1"
+        android:layout_below="@id/search_subject_physics_spinner"
+        android:padding="@dimen/doublePadding" />
+    <!-- second query line -->
+    <Spinner
+        android:id="@+id/search_spinner2"
+        android:layout_width="@dimen/searchSpinnerWidth"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/search_edittext2"
+        android:layout_alignParentStart="true"
+        android:entries="@array/search_spinner_array"
+        android:padding="@dimen/doublePadding"
+        android:prompt="@string/search_spinner_prompt" />
+    <EditText
+        android:id="@+id/search_edittext2"
+        android:layout_width="@dimen/searchEditTextWidth"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/search_spinner2"
+        android:layout_below="@id/search_edittext1"
+        android:padding="@dimen/doublePadding" />
+    <!-- third query line -->
+    <Spinner
+        android:id="@+id/search_spinner3"
+        android:layout_width="@dimen/searchSpinnerWidth"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/search_edittext3"
+        android:layout_alignParentStart="true"
+        android:entries="@array/search_spinner_array"
+        android:padding="@dimen/doublePadding"
+        android:prompt="@string/search_spinner_prompt" />
+    <EditText
+        android:id="@+id/search_edittext3"
+        android:layout_width="@dimen/searchEditTextWidth"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/search_spinner3"
+        android:layout_below="@id/search_edittext2"
+        android:padding="@dimen/doublePadding" />
+
+    <Space
+        android:id="@+id/search_spacer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_edittext3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/quadPadding"
+        android:layout_marginBottom="@dimen/standardPadding"/>
+
+    <Button
+        android:id="@+id/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_spacer"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/button_clean_single"
+        android:gravity="center"
+        android:textSize="@dimen/textview_middle_plus_size"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:text="Search" />
+
+</android.widget.RelativeLayout>

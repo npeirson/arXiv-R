@@ -1,0 +1,35 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_header_basic"
+        android:key="pref_key_basic">
+        <Preference
+            android:key="pref_key_favorites"
+            android:summary="@string/pref_summary_favorites"
+            android:title="@string/pref_header_favorites"/>
+        <Preference
+            android:key="pref_key_notifications"
+            android:summary="@string/pref_summary_notifications"
+            android:title="@string/pref_header_notifications" />
+        <Preference
+            android:key="pref_key_data_sync"
+            android:summary="@string/pref_summary_data_sync"
+            android:title="@string/pref_header_data_sync" />
+        <Preference
+            android:key="pref_key_widget"
+            android:summary="@string/pref_summary_widget"
+            android:title="@string/pref_header_widget" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_header_advanced"
+        android:key="pref_key_advanced">
+        <Preference
+            android:key="pref_key_card_layout"
+            android:summary="@string/pref_summary_card_layout"
+            android:title="@string/pref_header_card_layout"/>
+        <Preference
+            android:key="pref_key_accessibility"
+            android:summary="@string/pref_summary_accessibility"
+            android:title="@string/pref_header_accessibility" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

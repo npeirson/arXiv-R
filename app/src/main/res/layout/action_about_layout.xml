@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/searchDialogWidth"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_pretty">
+
+    <TextView
+        android:id="@+id/aboutHeaderTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:text="@string/aboutHeader"
+        android:textSize="@dimen/textview_big_0_size"
+        android:textStyle="bold"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/aboutTextView"
+        android:layout_width="@dimen/standardDialogTextWidth"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/textview_small_size"
+        android:textAlignment="center"
+        android:text="This is not an official arXiv app. The developer is not affiliated with arXiv.org, Cornell University, or the Cornell University Library.\nI  made it because I wanted a widget that would feed me recent e-prints similar to Google's news feed. If you have any suggestions, or if there are any features you'd like to see added, I'd welcome your input. Peace among worlds.\n\nThe source is available on GitHub:\nhttps://github.com/npeirson/arXiv-R\n\nCode improvements, pro-tips, and/or feedback would be greatly appreciated."
+        />
+
+    <TextView
+        android:id="@+id/creditsSubHeaderTextView"
+        android:layout_width="@dimen/standardDialogTextWidth"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/textview_middle_size"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:text="acknowledgements"
+        />
+
+    <TextView
+        android:id="@+id/creditsTextView"
+        android:layout_width="@dimen/standardDialogTextWidth"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/textview_small_size"
+        android:textAlignment="center"
+        android:text="Thanks to the following for their contributions:\nOguz Bilgener, Zack Dawood, everyone on stack overflow, more later."
+        />
+    <!-- Dade Murphy, Kate Libby, Rings of Saturn" -->
+
+    <TextView
+        android:id="@+id/coffeeSubHeaderTextView"
+        android:layout_width="@dimen/standardDialogTextWidth"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/textview_middle_size"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:text="buy me coffee"
+        />
+
+    <TextView
+        android:id="@+id/coffeeTextView"
+        android:layout_width="@dimen/standardDialogTextWidth"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/textview_small_size"
+        android:textAlignment="center"
+        android:text="If you found this app useful and want to support the caffeine addiction of a college student, just press the button."
+        />
+
+</LinearLayout>

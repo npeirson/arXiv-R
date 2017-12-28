@@ -8,17 +8,26 @@ It's far from done, I assure you.
 
 Also, this is my first project in Java, so code tips and suggestions are very welcome.
 
-#### Remaining tasks:
-- Finish designing custom search dialog
-- Add sub-section filtering
-- Favorites
-- "More articles" card
-- Make articles accessible
-- Make the actual widget, yo. You know, the whole reason you started this timesink in the first place.
-- Sharing
-- Expand to all categories
+#### Currently working on:
+- Bookmarks
 
-#### Additional features:
-If I have time...
-- favorites
-- history
+#### Remaining tasks:
+- Favorites
+- Add sub-section filtering
+- "More articles" card
+- Make the actual widget, yo. You know, the whole reason you started this timesink in the first place.
+- Expand to all fields and categories (remember pdf thing)
+- Icon
+- Auto-update
+- URL standardization
+
+#### Done
+- Recyclerview
+- Card expansion
+- Local list storage
+- Check last update
+- Sharing
+- Make articles accessible
+- Store and ope PDFs
+- Settings activity. This should be an activity.
+- Finish designing custom search dialog

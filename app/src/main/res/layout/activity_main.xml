@@ -22,4 +22,19 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
+    <View
+        android:id="@+id/loadingBG"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:background="@color/loadingDim"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/loadingBar"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
 </android.support.v4.widget.DrawerLayout>

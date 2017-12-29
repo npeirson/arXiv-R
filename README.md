@@ -9,7 +9,6 @@ It's far from done, I assure you.
 Also, this is my first project in Java, so code tips and suggestions are very welcome.
 
 #### Currently working on:
-- Bookmarks
 
 #### Remaining tasks:
 - Favorites
@@ -19,7 +18,6 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 - Expand to all fields and categories (remember pdf thing)
 - Icon
 - Auto-update
-- URL standardization
 
 #### Done
 - Recyclerview
@@ -31,3 +29,8 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 - Store and ope PDFs
 - Settings activity. This should be an activity.
 - Finish designing custom search dialog
+
+#### Pretty much done...
+- Bookmarks
+- Search functionality
+- URL standardization

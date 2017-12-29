@@ -24,7 +24,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.Toast;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     public List<RssFeedModel> mFeedModelList;
     public String category;
+    public String cfSuf;
     public String mFeedTitle;
     public String mFeedSummary;
     public String mFeedAuthor;
@@ -177,15 +177,17 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_first_layout) {
-            category = "cs";
             setTitle("Computer Science");
-            checkExists();
+            checkExists("cs");
         } else if (id == R.id.nav_second_layout) {
-            category = "math";
-            checkExists();
+            checkExists("math");
             setTitle("Mathematics");
         } else if (id == R.id.nav_slideshow) {
-
+            try {
+                new bewkmarx();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -236,7 +238,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
 
-                Log.d("MainActivity", "Parsing name ==> " + name);
+                //Log.d("MainActivity", "Parsing name ==> " + name);
                 String result = "";
                 if (xmlPullParser.next() == XmlPullParser.TEXT) {
                     result = xmlPullParser.getText();
@@ -257,7 +259,7 @@ public class MainActivity extends AppCompatActivity
                 } else if (name.equalsIgnoreCase("id")) {
                     id = result;
                 }
-                Log.d("MainActivity", "title = " + title + "\nsummary = " + summary + "\nauthor = " + author);
+                //Log.d("MainActivity", "title = " + title + "\nsummary = " + summary + "\nauthor = " + author);
                 if (title != null && summary != null && author != null) {
                     if (isItem) {
                         RssFeedModel item = new RssFeedModel(title, summary, author, published, updated, id);
@@ -305,9 +307,8 @@ public class MainActivity extends AppCompatActivity
             mFeedPublished = "published";
             mFeedUpdated = "updated";
             mFeedId = "id";
-
-            Log.d("MainActivity", "Category (when it counts) = " + category);
-            urlLink = ("https://export.arxiv.org/api/query?search_query=cat:" + category + "*&max_results=5");
+            urlLink= ("https://export.arxiv.org/api/query?" + category + "&max_results=5");
+            Log.d("urlLink",urlLink);
         }
 
         @Override
@@ -330,41 +331,44 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Boolean success) {
-            Log.d("postexecute","has begun");
-            if (success) {
+            Log.d("postexecute",mFeedModelList.toString());
+            if ( mFeedModelList.isEmpty() ) {
                 loadingBlip.dismiss();
-                sendMessenger();
-            } else {
-                Toast.makeText(MainActivity.this,
-                        "Questionable internet connectivity...",
+                Toast.makeText(getApplicationContext(),
+                        "Search returned no results",
                         Toast.LENGTH_LONG).show();
+            } else {
+                if (success) {
+                    loadingBlip.dismiss();
+                    sendMessenger();
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            "Questionable internet connectivity",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
 
     private void sendMessenger() {
-
         try {
-            FileOutputStream fos = this.openFileOutput(category + "File", MODE_PRIVATE);
+            FileOutputStream fos = this.openFileOutput(cfSuf + "File", MODE_PRIVATE);
+            Log.d("ok",cfSuf+"File");
             ObjectOutputStream of = new ObjectOutputStream(fos);
             of.writeObject(mFeedModelList);
             of.flush();
             of.close();
             fos.close();
-            Log.d("sendMessenger","Closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String test = "Rubber duckies are the SHIT";
         FragmentManager fragmentManager = getFragmentManager();
         FirstFragment newFragment = new FirstFragment();
         ParcelableArrayList pal = new ParcelableArrayList();
         pal.setThing(mFeedModelList);
-        pal.setTitle(test);
         Log.d("sendMessenger", String.valueOf(mFeedModelList));
         Bundle bundle = new Bundle();
         bundle.putParcelable("articles", pal);
-        bundle.putString("test", test);
         if (bundle != null) {
             newFragment.setArguments(bundle);
             fragmentManager.beginTransaction()
@@ -377,51 +381,63 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void checkExists() {
+    public void search(String cat) {
+        category = cat;
+        cfSuf = "ignore";
+        Log.d("searching for....",category);
+        new FetchFeedTask().execute((Void) null);
+    }
+
+    private void checkExists(String cat) {
         // see if file exists
-        File catFile = getApplicationContext().getFileStreamPath(category + "File");
-        if (catFile == null || !catFile.exists()) {
+        File catFile = getApplicationContext().getFileStreamPath(cat + "File");
+        cfSuf = cat;
+        if ( cfSuf != "ignore" ) {
+            if (catFile == null || !catFile.exists()) {
             Log.d("redundancy checker","doesn't exist");
             // This means we should write a new one
+            category = "search_query=cat:" + cat + "*";
             new FetchFeedTask().execute((Void) null);
         } else {
-            Log.d("redundancy checker","exists");
+                Log.d("redundancy checker", "exists");
 
-            // file exists, so check date
-            SimpleDateFormat df = new SimpleDateFormat("MMdd");
-            Date todayDate = new Date();
-            Date lastModDate = new Date(catFile.lastModified());
-            String today = df.format(todayDate);
-            String lastMod = df.format(lastModDate);
+                // file exists, so check date
+                SimpleDateFormat df = new SimpleDateFormat("MMdd");
+                Date todayDate = new Date();
+                Date lastModDate = new Date(catFile.lastModified());
+                String today = df.format(todayDate);
+                String lastMod = df.format(lastModDate);
 
-            if (Integer.parseInt(today) != Integer.parseInt(lastMod)) {
-                // outdated, get new
-                Log.d("wat",today +" is today and last mod is " + lastMod);
-                Log.d("redundancy checker","outdated, fetching new data");
-                new FetchFeedTask().execute((Void) null);
+                if (Integer.parseInt(today) != Integer.parseInt(lastMod)) {
+                    // outdated, get new
+                    Log.d("wat", today + " is today and last mod is " + lastMod);
+                    Log.d("redundancy checker", "outdated, fetching new data");
+                    category = "search_query=cat:" + cat + "*";
+                    new FetchFeedTask().execute((Void) null);
 
-            } else {
-                // current, send cached
-                Log.d("redundancy checker","current");
+                } else {
+                    // current, send cached
+                    Log.d("redundancy checker", "current");
 
-                ArrayList<RssFeedModel> cachedData;
-                FileInputStream fis;
-                try {
-                    fis = this.openFileInput(category + "File");
-                    ObjectInputStream oi = new ObjectInputStream(fis);
-                    cachedData = (ArrayList<RssFeedModel>) oi.readObject();
-                    oi.close();
-                    fis.close(); // hmmmm
-                    mFeedModelList = cachedData;
-                } catch (FileNotFoundException e) {
-                    Log.e("InternalStorage", e.getMessage());
-                } catch (IOException e) {
-                    Log.e("InternalStorage", e.getMessage());
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    ArrayList<RssFeedModel> cachedData;
+                    FileInputStream fis;
+                    try {
+                        fis = this.openFileInput(cfSuf + "File");
+                        ObjectInputStream oi = new ObjectInputStream(fis);
+                        cachedData = (ArrayList<RssFeedModel>) oi.readObject();
+                        oi.close();
+                        fis.close(); // hmmmm
+                        mFeedModelList = cachedData;
+                    } catch (FileNotFoundException e) {
+                        Log.e("InternalStorage", e.getMessage());
+                    } catch (IOException e) {
+                        Log.e("InternalStorage", e.getMessage());
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("redundancy checker", "sending old info");
+                    sendMessenger();
                 }
-                Log.d("redundancy checker","sending old info");
-                sendMessenger();
             }
         }
     }
@@ -433,6 +449,34 @@ public class MainActivity extends AppCompatActivity
             for (Fragment fragment : fragments) {
                 fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
+        }
+    }
+    private class bewkmarx {
+        private bewkmarx() throws IOException {
+            File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
+            FileInputStream fis;
+            fis = new FileInputStream(bmFile);
+            byte fileContent[] = new byte[(int)bmFile.length()];
+            fis.read(fileContent);
+            String bm = new String(fileContent);
+            // gonna be a bitch cuz you can only search for one at a time. shit.
+
+            int lidx = 0;
+            int idx = 0;
+            String cat = "";
+
+            while ((idx = bm.indexOf("\n", idx)) != -1)
+            {
+                lidx = idx;
+                idx++;
+                Log.d("derp", String.valueOf(idx));
+                cat = cat + "id_list=" + bm.indexOf(lidx)+idx;
+
+            }
+
+            String substr=bm.substring(bm.indexOf("\n"));
+            Log.d("oi", cat);
+            category = cat;
         }
     }
 }

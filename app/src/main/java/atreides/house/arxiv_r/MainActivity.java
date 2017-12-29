@@ -24,7 +24,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.Toast;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -178,15 +177,17 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_first_layout) {
-            //category = "cs";
             setTitle("Computer Science");
             checkExists("cs");
         } else if (id == R.id.nav_second_layout) {
-            //category = "math";
             checkExists("math");
             setTitle("Mathematics");
         } else if (id == R.id.nav_slideshow) {
-
+            try {
+                new bewkmarx();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -382,7 +383,6 @@ public class MainActivity extends AppCompatActivity
 
     public void search(String cat) {
         category = cat;
-        setTitle("Search Results");
         cfSuf = "ignore";
         Log.d("searching for....",category);
         new FetchFeedTask().execute((Void) null);
@@ -412,6 +412,7 @@ public class MainActivity extends AppCompatActivity
                     // outdated, get new
                     Log.d("wat", today + " is today and last mod is " + lastMod);
                     Log.d("redundancy checker", "outdated, fetching new data");
+                    category = "search_query=cat:" + cat + "*";
                     new FetchFeedTask().execute((Void) null);
 
                 } else {
@@ -448,6 +449,34 @@ public class MainActivity extends AppCompatActivity
             for (Fragment fragment : fragments) {
                 fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
+        }
+    }
+    private class bewkmarx {
+        private bewkmarx() throws IOException {
+            File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
+            FileInputStream fis;
+            fis = new FileInputStream(bmFile);
+            byte fileContent[] = new byte[(int)bmFile.length()];
+            fis.read(fileContent);
+            String bm = new String(fileContent);
+            // gonna be a bitch cuz you can only search for one at a time. shit.
+
+            int lidx = 0;
+            int idx = 0;
+            String cat = "";
+
+            while ((idx = bm.indexOf("\n", idx)) != -1)
+            {
+                lidx = idx;
+                idx++;
+                Log.d("derp", String.valueOf(idx));
+                cat = cat + "id_list=" + bm.indexOf(lidx)+idx;
+
+            }
+
+            String substr=bm.substring(bm.indexOf("\n"));
+            Log.d("oi", cat);
+            category = cat;
         }
     }
 }

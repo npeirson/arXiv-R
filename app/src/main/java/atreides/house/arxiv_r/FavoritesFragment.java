@@ -29,6 +29,7 @@ public class FavoritesFragment extends Fragment {
         myView = inflater.inflate(R.layout.favorites_layout, container, false);
 
         final FloatingActionButton fabFav = myView.findViewById(R.id.fabFavorites);
+        fabFav.setImageResource(android.R.drawable.ic_menu_add);
         fabFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

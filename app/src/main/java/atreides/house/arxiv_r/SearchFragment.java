@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -41,12 +40,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         Spinner spinner1 = myView.findViewById(R.id.search_spinner1);
         Spinner spinner2 = myView.findViewById(R.id.search_spinner2);
         Spinner spinner3 = myView.findViewById(R.id.search_spinner3);
-
-        /*
-        ArrayAdapter spinner1adapter = (ArrayAdapter) spinner1.getAdapter();
-        ArrayAdapter spinner2adapter = (ArrayAdapter) spinner2.getAdapter();
-        ArrayAdapter spinner3adapter = (ArrayAdapter) spinner3.getAdapter();
-        */
 
         spinner1.setSelection(1);
         spinner2.setSelection(0);

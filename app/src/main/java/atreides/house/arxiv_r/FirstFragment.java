@@ -18,11 +18,11 @@ import java.util.List;
 public class FirstFragment extends Fragment {
     View myView;
 
+    public RecyclerView.Adapter mAdapter;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private RecyclerView mRecyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,9 +38,14 @@ public class FirstFragment extends Fragment {
         List<RssFeedModel> mFeedModelList = pal.getThing();
 
         myView = inflater.inflate(R.layout.first_layout, container, false);
-        mRecyclerView = myView.findViewById(R.id.recyclerView);
+        RecyclerView mRecyclerView = myView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
+        mAdapter = new RssFeedListAdapter(mFeedModelList);
+        mRecyclerView.setAdapter(mAdapter);
         return myView;
+    }
+    public void newContent() {
+        // placeholder for if the user scrolls to the bottom like a noob
+
     }
 }

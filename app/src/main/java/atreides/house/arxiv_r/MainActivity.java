@@ -24,7 +24,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.Toast;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     public List<RssFeedModel> mFeedModelList;
     public String category;
+    public String cfSuf;
     public String mFeedTitle;
     public String mFeedSummary;
     public String mFeedAuthor;
@@ -188,7 +188,11 @@ public class MainActivity extends AppCompatActivity
             // ahhhhhhhh
             String urlLink = ("https://export.arxiv.org/api/query?search_query=cat:" + category + "*&max_results=5");
         } else if (id == R.id.nav_slideshow) {
-
+            try {
+                new bewkmarx();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -210,6 +214,34 @@ public class MainActivity extends AppCompatActivity
             for (Fragment fragment : fragments) {
                 fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
+        }
+    }
+    private class bewkmarx {
+        private bewkmarx() throws IOException {
+            File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
+            FileInputStream fis;
+            fis = new FileInputStream(bmFile);
+            byte fileContent[] = new byte[(int)bmFile.length()];
+            fis.read(fileContent);
+            String bm = new String(fileContent);
+            // gonna be a bitch cuz you can only search for one at a time. shit.
+
+            int lidx = 0;
+            int idx = 0;
+            String cat = "";
+
+            while ((idx = bm.indexOf("\n", idx)) != -1)
+            {
+                lidx = idx;
+                idx++;
+                Log.d("derp", String.valueOf(idx));
+                cat = cat + "id_list=" + bm.indexOf(lidx)+idx;
+
+            }
+
+            String substr=bm.substring(bm.indexOf("\n"));
+            Log.d("oi", cat);
+            category = cat;
         }
     }
 }

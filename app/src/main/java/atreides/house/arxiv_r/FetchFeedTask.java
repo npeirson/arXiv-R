@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.Toast;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
@@ -44,11 +46,11 @@ public class FetchFeedTask extends AppCompatActivity {
 
 
     // for "more cards" calls
-    public void FetchFeedTask(String cat, int pos){
+    public FetchFeedTask(String cat, int pos){
         // could add old data concatenation for increased efficiency
     }
 
-    public void FetchFeedTask(String string, boolean dc){
+    public FetchFeedTask(String string, boolean dc){
         if ( dc == true ) {
             // for activity drawer calls
             filePrefix = string;
@@ -61,7 +63,7 @@ public class FetchFeedTask extends AppCompatActivity {
     }
 
     // for bookmarks
-    public void FetchFeedTask(ArrayList<String> targetUrlList){
+    public FetchFeedTask(ArrayList<String> targetUrlList){
         urlList = targetUrlList;
     }
 
@@ -232,19 +234,25 @@ public class FetchFeedTask extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean success) {
-            if (success) {
-                if ( preD == true ) {
-                    saveData();
-                    sendMessenger();
-                } else {
-                    sendMessenger();
-                }
+            if (mFeedModelList.isEmpty()) {
+                //loadingBlip.dismiss();
+                Toast.makeText(getApplicationContext(),
+                        "Search returned no results",
+                        Toast.LENGTH_LONG).show();
             } else {
-                // idk, it failed, what else do you want? Deal with it.
+            if (success) {
+                    if (preD == true) {
+                        saveData();
+                        sendMessenger();
+                    } else {
+                        sendMessenger();
+                    }
+                } else {
+                    // idk, it failed, what else do you want? Deal with it.
+                }
             }
         }
     }
-
     // save data if reasonable
     private void saveData() {
         try {
@@ -261,7 +269,7 @@ public class FetchFeedTask extends AppCompatActivity {
 
     // bundle and send data
     private void sendMessenger() {
-        if ( add = true ) {
+        if (add = true) {
             // just adding new info, dawg
         } else {
             // make an entire fragment

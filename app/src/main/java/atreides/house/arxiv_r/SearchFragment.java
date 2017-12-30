@@ -117,7 +117,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                 } else {
                     // do the search!
                     String query = "search_query=" + sq1 + sq2 + sq3;
-                    ((MainActivity)getActivity()).search(query);
+                    new FetchFeedTask(query,false);
                 }
             }
         });

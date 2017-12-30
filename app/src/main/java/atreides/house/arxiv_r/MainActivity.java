@@ -46,15 +46,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
-    public List<RssFeedModel> mFeedModelList;
     public String category;
     public String cfSuf;
-    public String mFeedTitle;
-    public String mFeedSummary;
-    public String mFeedAuthor;
-    public String mFeedPublished;
-    public String mFeedUpdated;
-    public String mFeedId;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,

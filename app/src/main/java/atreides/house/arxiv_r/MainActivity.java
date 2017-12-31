@@ -3,7 +3,6 @@ package atreides.house.arxiv_r;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,11 +22,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +34,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public MainActivity getMyContext() {
-        return this;
-    }
-
-    private static final String TAG = "MainActivity";
     public String category;
-    public String cfSuf;
+    public ArrayList<String> bkmx;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -74,25 +68,6 @@ public class MainActivity extends AppCompatActivity
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            /*
-            FileOutputStream bos = null;
-            String binit = "bookmarks:";
-            try {
-                bos = new FileOutputStream(bmFile);
-                bos.write(binit.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (bos != null) {
-                        bos.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            */
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -218,49 +193,23 @@ public class MainActivity extends AppCompatActivity
         }
     }
     private class bewkmarx {
+        File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
         private bewkmarx() throws IOException {
-            File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
-            FileInputStream fis;
-            fis = new FileInputStream(bmFile);
-            byte fileContent[] = new byte[(int)bmFile.length()];
-            fis.read(fileContent);
-            String bm = new String(fileContent);
-            ArrayList<String> umm = null;
-
-            for(int i = 0; i < fileContent.length; i++)
-            {
-            //    String str = fileContent[i];
-               // umm.add(str);
+            try {
+                FileInputStream fis = new FileInputStream(bmFile);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                setTitle("Bookmarks");
+                new FetchFeedTask((ArrayList<String>) ois.readObject(), MainActivity.this, getFragmentManager());
+                ois.close();
+                fis.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            Log.d("ummmmm", String.valueOf(umm));
-            /*
-            ArrayList<Integer> pos = new ArrayList<>();
-            ArrayList<String> bml = new ArrayList<>();
-
-            int lidx = 0;
-            int idx = 0;
-            String cat = "";
-            Log.d("derp",bm);
-            while ((idx = bm.indexOf("\n", idx)) != -1)
-            {
-                pos.add(idx);
-                idx++;
-                //cat = cat + "id_list=" + bm.indexOf(lidx)+idx;
-            }
-            pos.size();
-            for (int i = 0 )
-            bml.add(bm.substring(pos[i]+2,[i+1]));
-            for (int lindx : pos) {
-                Log.d("umm", String.valueOf(lindx));
-            }
-
-            //String substr=bm.substring(bm.indexOf("\n"));
-            Log.d("oi", String.valueOf(bml));
-            //category = cat;
-        */
         }
+
     }
 }
+
 
 
 

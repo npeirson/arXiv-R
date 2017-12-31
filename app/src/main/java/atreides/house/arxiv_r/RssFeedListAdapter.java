@@ -1,7 +1,6 @@
 package atreides.house.arxiv_r;
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,12 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +33,7 @@ public class RssFeedListAdapter
         extends RecyclerView.Adapter<RssFeedListAdapter.FeedModelViewHolder> {
 
     private List<RssFeedModel> mRssFeedModels;
-    public List<String> bkmx;
+    public ArrayList<String> bkmx;
     public View XrssFeedView;
 
     public class FeedModelViewHolder extends RecyclerView.ViewHolder {
@@ -79,7 +76,7 @@ public class RssFeedListAdapter
                             //fos = this.openFileOutput("bookmarks", Context.MODE_PRIVATE);
                             fis = new FileInputStream(bmFile);
                             ObjectInputStream ois = new ObjectInputStream(fis);
-                            bkmx = (List<String>) ois.readObject();
+                            bkmx = (ArrayList<String>) ois.readObject();
                             if (bkmx.contains(trimmed)){
                                 // change to bookmarked state
                                 itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.VISIBLE);
@@ -92,43 +89,15 @@ public class RssFeedListAdapter
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        /*
-                        try{
-                            fis = new FileInputStream(bmFile);
-                            byte fileContent[] = new byte[(int)bmFile.length()];
-                            fis.read(fileContent);
-                            String bm = new String(fileContent);
-                            if (bm.contains(trimmed)){
-                                // change to bookmarked state
-                                itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.VISIBLE);
-                            } else {
-                                itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.VISIBLE);
-                            }
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } finally {
-                            try{
-                                if (fis != null) {
-                                    fis.close();
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        */
 
                         // bookmark button press
                         itemView.findViewById(R.id.buttonBookmark).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-
                                 try {
-                                    //fos = this.openFileOutput("bookmarks", Context.MODE_PRIVATE);
                                     FileInputStream fis = new FileInputStream(bmFile);
                                     ObjectInputStream ois = new ObjectInputStream(fis);
-                                    bkmx = (List<String>) ois.readObject();
+                                    bkmx = (ArrayList<String>) ois.readObject();
                                     ois.close();
                                     fis.close();
                                     Log.d("thing!!!!!", String.valueOf(bkmx));
@@ -139,66 +108,37 @@ public class RssFeedListAdapter
                                     oos.writeObject(bkmx);
                                     oos.close();
                                     fos.close();
-
-
                                 } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                /*
-                                FileOutputStream fos = null;
-                                FileInputStream fin = null;
-                                ArrayList<String> umm = null;
-                                try {
-                                    fin = new FileInputStream(bmFile);
-                                    byte fileContent[] = new byte[(int)bmFile.length()];
-                                    fin.read(fileContent);
-                                    String bm = new String(fileContent);
-                                    fos = new FileOutputStream(bmFile);
-                                    String add = bm + "\n" + trimmed;
-                                    fos.write(add.getBytes());
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
                                     e.printStackTrace();
                                 } finally {
                                     itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.VISIBLE);
-                                    //itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.GONE); // for some reason this flips out??
-                                    try {
-                                        fin.close();
-                                        fos.close();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }*/
+                                    itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.INVISIBLE);
+                                }
                             }
                         });
 
                         itemView.findViewById(R.id.buttonBookmarked).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                FileOutputStream fos = null;
-                                FileInputStream fin = null;
                                 try {
-                                    fin = new FileInputStream(bmFile);
-                                    byte fileContent[] = new byte[(int)bmFile.length()];
-                                    fin.read(fileContent);
-                                    String bm = new String(fileContent);
-                                    fos = new FileOutputStream(bmFile);
-                                    String remove = bm.replace("\n" + trimmed, "");
-                                    fos.write(remove.getBytes());
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
+                                    FileInputStream fis = new FileInputStream(bmFile);
+                                    ObjectInputStream ois = new ObjectInputStream(fis);
+                                    bkmx = (ArrayList<String>) ois.readObject();
+                                    ois.close();
+                                    fis.close();
+                                    Log.d("thing!!!!!", String.valueOf(bkmx));
+                                    bkmx.remove(trimmed);
+                                    Log.d("thing!!!!!", String.valueOf(bkmx));
+                                    FileOutputStream fos = new FileOutputStream(bmFile);
+                                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                                    oos.writeObject(bkmx);
+                                    oos.close();
+                                    fos.close();
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 } finally {
                                     itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.VISIBLE);
                                     itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.GONE);
-                                    try {
-                                        fin.close();
-                                        fos.close();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
                                 }
                             }
                         });

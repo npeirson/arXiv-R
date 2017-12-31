@@ -1,6 +1,5 @@
 package atreides.house.arxiv_r;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -9,11 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
+import org.apache.commons.io.FileUtils;
 import static android.content.ContentValues.TAG;
 
 /**
@@ -36,7 +36,6 @@ public class FetchFeedTask extends AppCompatActivity {
     public Context context;
     public FragmentManager fragMan;
     public List<RssFeedModel> mFeedModelList;
-    public List<String> urlList;
     public String mFeedTitle;
     public String mFeedSummary;
     public String mFeedAuthor;
@@ -47,14 +46,16 @@ public class FetchFeedTask extends AppCompatActivity {
     public String baseUrl = "https://export.arxiv.org/api/query?";
     public Boolean preD = false;
     public Boolean add = false;
-    public Boolean stackMe;
+    public Boolean love = false;
+    public Boolean bmks = false;
+    public Boolean stackMe = false;
+
 
     // for "more cards" calls
     public FetchFeedTask(String fp, int pos, Context ctx, FragmentManager frag){
         // could add old data concatenation for increased efficiency
         fragMan = frag;
         context = ctx;
-
     }
 
     public FetchFeedTask(String fp, boolean dc, Context ctx, FragmentManager frag){
@@ -76,8 +77,55 @@ public class FetchFeedTask extends AppCompatActivity {
     }
 
     // for bookmarks
-    public FetchFeedTask(ArrayList<String> targetUrlList){
-        urlList = targetUrlList;
+    public FetchFeedTask(ArrayList<String> targetUrlList, Context ctx, FragmentManager frag) throws IOException, ClassNotFoundException {
+        fragMan = frag;
+        context = ctx;
+        bmks = true;
+        File oldBmks = new File(ctx.getFilesDir().getAbsolutePath() + "oldbookmarks");
+        File bmFile = new File(ctx.getFilesDir().getAbsolutePath() + "/bookmarks");
+        if (oldBmks == null || !oldBmks.exists()) {
+            // pop the cherry
+            syncBookmarks(bmFile, oldBmks);
+            new FetchFeedAsync().execute(targetUrlList.toArray(new String[targetUrlList.size()]));
+        } else {
+            // if !virgin
+            if (FileUtils.contentEquals(oldBmks, bmFile)) {
+                // bookmarks haven't changed
+                ArrayList<RssFeedModel> cachedData;
+                FileInputStream fis;
+                try {
+                    fis = ctx.openFileInput("bookmarksFile");
+                    ObjectInputStream oi = new ObjectInputStream(fis);
+                    cachedData = (ArrayList<RssFeedModel>) oi.readObject();
+                    oi.close();
+                    fis.close();
+                    mFeedModelList = cachedData;
+                } catch (IOException e) {
+                    Log.e("InternalStorage", e.getMessage());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                sendMessenger();
+            } else {
+                // bookmarks have changed
+                syncBookmarks(bmFile, oldBmks);
+                new FetchFeedAsync().execute(targetUrlList.toArray(new String[targetUrlList.size()]));
+            }
+            //new FetchFeedAsync().execute(targetUrlList.toArray(new String[targetUrlList.size()]));
+        }
+    }
+
+    private void syncBookmarks(File bmFile, File oldBmks) throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(bmFile);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        ArrayList<String> cbkmx = (ArrayList<String>) ois.readObject();
+        ois.close();
+        fis.close();
+        FileOutputStream fos = new FileOutputStream(oldBmks);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(cbkmx);
+        oos.close();
+        fos.close();
     }
 
     // See if requested data already exist
@@ -228,32 +276,78 @@ public class FetchFeedTask extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(String... strings) {
-            String urlLink = strings[0];
-            try {
-                URL url = new URL(urlLink);
-                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-                InputStream inputStream = conn.getInputStream();
-                mFeedModelList = parseFeed(inputStream);
-                return true;
+            if (strings.length == 0 ) {
+                if ( bmks == true ) {
+                    mFeedModelList = new ArrayList<>();
+                    love = true;
+                } else {
+                    mFeedModelList = new ArrayList<>();
+                    love = false;
+                } return love;
+            } else if (strings.length == 1) {
+                String urlLink = null;
+                // one url
+                if ( bmks == true ) {
+                    // one bookmark
+                    urlLink = baseUrl + "id_list=" + strings[0];
+                } else {
+                    // category/search
+                    urlLink = strings[0];
+                }
+                    try {
+                        URL url = new URL(urlLink);
+                        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                        InputStream inputStream = conn.getInputStream();
+                        mFeedModelList = parseFeed(inputStream);
+                        return true;
 
-            } catch (IOException e) {
-                Log.e(TAG, "Error", e);
-            } catch (XmlPullParserException e) {
-                Log.e(TAG, "Error", e);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error", e);
+                    } catch (XmlPullParserException e) {
+                        Log.e(TAG, "Error", e);
+                    }
+                    return false;
+            } else {
+                // many urls
+                for(int i=0;i<strings.length;i++) {
+                    String urlLink = baseUrl + "id_list=" + strings[i];
+                    try {
+                        URL url = new URL(urlLink);
+                        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                        InputStream inputStream = conn.getInputStream();
+                        if (i == 0) {
+                            mFeedModelList = parseFeed(inputStream);
+                        } else {
+                            mFeedModelList.addAll(parseFeed(inputStream));
+                        }
+                        love = true;
+
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error", e);
+                    } catch (XmlPullParserException e) {
+                        Log.e(TAG, "Error", e);
+                    }
+                }
+                return love;
             }
-            return false;
         }
 
         @Override
         protected void onPostExecute(Boolean success) {
             if (mFeedModelList.isEmpty()) {
-                //loadingBlip.dismiss();
-                Toast.makeText(context,
-                        "Search returned no results",
-                        Toast.LENGTH_LONG).show();
+                if ( bmks == true ) {
+                    Toast.makeText(context,
+                            "You have no bookmarks",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    //,loadingBlip.dismiss();
+                    Toast.makeText(context,
+                            "Search returned no results",
+                            Toast.LENGTH_LONG).show();
+                }
             } else {
                 if (success) {
-                    if (preD == true) {
+                    if (preD == true || bmks == true) {
                         saveData();
                         sendMessenger();
                     } else {
@@ -269,7 +363,13 @@ public class FetchFeedTask extends AppCompatActivity {
     // save data if reasonable
     private void saveData() {
         try {
-            FileOutputStream fos = context.openFileOutput(fpSave + "File", MODE_PRIVATE);
+            String dest;
+            if ( bmks == true ) {
+                dest = "bookmarksFile";
+            } else {
+                dest = fpSave + "File";
+            }
+            FileOutputStream fos = context.openFileOutput(dest, MODE_PRIVATE);
             ObjectOutputStream of = new ObjectOutputStream(fos);
             of.writeObject(mFeedModelList);
             of.flush();
@@ -297,14 +397,18 @@ public class FetchFeedTask extends AppCompatActivity {
             bundle.putParcelable("articles", pal);
             if (bundle != null) {
                 newFragment.setArguments(bundle);
-                fragMan.beginTransaction()
-                        .replace(R.id.content_frame
-                                , newFragment)
-                        //.addToBackStack(null)
-                        .commit();
+                if ( stackMe == true ) {
+                    fragMan.beginTransaction()
+                            .replace(R.id.content_frame, newFragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    fragMan.beginTransaction()
+                            .replace(R.id.content_frame, newFragment)
+                            .commit();
+                }
             } else {
                 Log.d("MainActivity", "null message :( :( :(");
-
             }
         }
     }

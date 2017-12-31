@@ -32,4 +32,5 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'com.android.support:design:27.0.2'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
+    compile 'commons-io:commons-io:2.6'
 }

@@ -46,6 +46,7 @@ public class FetchFeedTask extends AppCompatActivity {
     public String mFeedId;
     public String fpSave; // until I figure out how to pass this...
     public String baseUrl = "https://export.arxiv.org/api/query?";
+    public FragmentManager fragMan;
 
     // for pulling info
     public FetchFeedTask() { }
@@ -55,17 +56,19 @@ public class FetchFeedTask extends AppCompatActivity {
         // could add old data concatenation for increased efficiency
     }
 
-    public FetchFeedTask(String fp, boolean dc, Context ctx){
+    public FetchFeedTask(String fp, boolean dc, Context ctx, FragmentManager frag){
+        // for everyone else's sake...
+        fragMan = frag;
+        fpSave = fp;
+        context = ctx;
         if ( dc == true ) {
             // for activity drawer calls
-            Log.d("fp","equals: " + fp);
             preD = true;
-            // for everyone else's sake...
-            fpSave = fp;
-            context = ctx;
             checkExists(fp, ctx);
         } else {
-            // for searches
+            preD = false;
+            Log.d("url",baseUrl + fp );
+            new FetchFeedAsync().execute(baseUrl + fp + "&max_results=10");
         }
     }
 
@@ -74,13 +77,13 @@ public class FetchFeedTask extends AppCompatActivity {
         urlList = targetUrlList;
     }
 
-    // See requested data already exist
+    // See if requested data already exist
     private void checkExists(String fp, Context context) {
         // see if file exists
         File catFile = context.getFileStreamPath(fp + "File");
         if (catFile == null || !catFile.exists()) {
             Log.d("redundancy checker","doesn't exist");
-            // set save tag
+            new FetchFeedAsync().execute(baseUrl + "search_query=cat:" + fp + "*&max_results=10");
         } else {
             Log.d("redundancy checker","exists");
             SimpleDateFormat df = new SimpleDateFormat("MMdd");
@@ -91,7 +94,6 @@ public class FetchFeedTask extends AppCompatActivity {
 
             if (Integer.parseInt(today) != Integer.parseInt(lastMod)) {
                 // outdated, get new
-                Log.d("wat",today +" is today and last mod is " + lastMod);
                 Log.d("redundancy checker","outdated, fetching new data");
                 new FetchFeedAsync().execute(baseUrl + "search_query=cat:" + fp + "*&max_results=10");
 
@@ -286,6 +288,34 @@ public class FetchFeedTask extends AppCompatActivity {
 
     // bundle and send data
     private void sendMessenger() {
-        new MainActivity().doTheThing();
+        // first get the info
+
+        Log.d("ummmmm","the thing is... " + fragMan);
+        Boolean add = new FetchFeedTask().getAddState();
+
+        if (add == true) {
+            // just adding new info, dawg
+            Log.d("sendmessenger", String.valueOf(add));
+        } else {
+            // make an entire fragment
+            Log.d("sendmessenger","else");
+            //FragmentManager fragmentManager = getFragmentManager();
+            FirstFragment newFragment = new FirstFragment();
+            ParcelableArrayList pal = new ParcelableArrayList();
+            pal.setThing(mFeedModelList);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("articles", pal);
+            if (bundle != null) {
+                newFragment.setArguments(bundle);
+                fragMan.beginTransaction()
+                        .replace(R.id.content_frame
+                                , newFragment)
+                        //.addToBackStack(null)
+                        .commit();
+            } else {
+                Log.d("MainActivity", "null message :( :( :(");
+
+            }
+        }
     }
 }

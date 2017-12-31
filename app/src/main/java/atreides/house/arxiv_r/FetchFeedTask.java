@@ -1,6 +1,8 @@
 package atreides.house.arxiv_r;
 
+import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -31,34 +33,39 @@ import static android.content.ContentValues.TAG;
 
 public class FetchFeedTask extends AppCompatActivity {
     // initialize stuff and things
+    public Context context;
     public Boolean preD = false;
     public Boolean add = false;
     public List<RssFeedModel> mFeedModelList;
     public List<String> urlList;
-    public String urlLink;
     public String mFeedTitle;
     public String mFeedSummary;
     public String mFeedAuthor;
     public String mFeedPublished;
     public String mFeedUpdated;
     public String mFeedId;
-    public String filePrefix;
+    public String fpSave; // until I figure out how to pass this...
+    public String baseUrl = "https://export.arxiv.org/api/query?";
 
+    // for pulling info
+    public FetchFeedTask() { }
 
     // for "more cards" calls
     public FetchFeedTask(String cat, int pos){
         // could add old data concatenation for increased efficiency
     }
 
-    public FetchFeedTask(String string, boolean dc){
+    public FetchFeedTask(String fp, boolean dc, Context ctx){
         if ( dc == true ) {
             // for activity drawer calls
-            filePrefix = string;
+            Log.d("fp","equals: " + fp);
             preD = true;
-            checkExists();
+            // for everyone else's sake...
+            fpSave = fp;
+            context = ctx;
+            checkExists(fp, ctx);
         } else {
             // for searches
-            urlLink = string;
         }
     }
 
@@ -68,9 +75,9 @@ public class FetchFeedTask extends AppCompatActivity {
     }
 
     // See requested data already exist
-    private void checkExists() {
+    private void checkExists(String fp, Context context) {
         // see if file exists
-        File catFile = getApplicationContext().getFileStreamPath(filePrefix + "File");
+        File catFile = context.getFileStreamPath(fp + "File");
         if (catFile == null || !catFile.exists()) {
             Log.d("redundancy checker","doesn't exist");
             // set save tag
@@ -86,7 +93,7 @@ public class FetchFeedTask extends AppCompatActivity {
                 // outdated, get new
                 Log.d("wat",today +" is today and last mod is " + lastMod);
                 Log.d("redundancy checker","outdated, fetching new data");
-                new FetchFeedAsync().execute((Void) null);
+                new FetchFeedAsync().execute(baseUrl + "search_query=cat:" + fp + "*&max_results=10");
 
             } else {
                 // current, send cached
@@ -95,7 +102,7 @@ public class FetchFeedTask extends AppCompatActivity {
                 ArrayList<RssFeedModel> cachedData;
                 FileInputStream fis;
                 try {
-                    fis = this.openFileInput(filePrefix + "File");
+                    fis = context.openFileInput(fp + "File");
                     ObjectInputStream oi = new ObjectInputStream(fis);
                     cachedData = (ArrayList<RssFeedModel>) oi.readObject();
                     oi.close();
@@ -201,7 +208,7 @@ public class FetchFeedTask extends AppCompatActivity {
     }
 
     // call parser and group data
-    public class FetchFeedAsync extends AsyncTask<Void, Void, Boolean> {
+    public class FetchFeedAsync extends AsyncTask<String, Void, Boolean> {
 
         @Override
         protected void onPreExecute() {
@@ -215,8 +222,8 @@ public class FetchFeedTask extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
-
+        protected Boolean doInBackground(String... strings) {
+            String urlLink = strings[0];
             try {
                 URL url = new URL(urlLink);
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
@@ -236,11 +243,11 @@ public class FetchFeedTask extends AppCompatActivity {
         protected void onPostExecute(Boolean success) {
             if (mFeedModelList.isEmpty()) {
                 //loadingBlip.dismiss();
-                Toast.makeText(getApplicationContext(),
+                Toast.makeText(context,
                         "Search returned no results",
                         Toast.LENGTH_LONG).show();
             } else {
-            if (success) {
+                if (success) {
                     if (preD == true) {
                         saveData();
                         sendMessenger();
@@ -249,6 +256,7 @@ public class FetchFeedTask extends AppCompatActivity {
                     }
                 } else {
                     // idk, it failed, what else do you want? Deal with it.
+                    Log.d("what","dafuq");
                 }
             }
         }
@@ -256,39 +264,28 @@ public class FetchFeedTask extends AppCompatActivity {
     // save data if reasonable
     private void saveData() {
         try {
-            FileOutputStream fos = this.openFileOutput(filePrefix + "File", MODE_PRIVATE);
+            FileOutputStream fos = context.openFileOutput(fpSave + "File", MODE_PRIVATE);
             ObjectOutputStream of = new ObjectOutputStream(fos);
             of.writeObject(mFeedModelList);
             of.flush();
             of.close();
             fos.close();
+            Log.d("saver","saved");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public boolean getAddState(){
+        return add;
+    }
+
+    public List<RssFeedModel> getmFeedModelList() {
+        return mFeedModelList;
+    }
+
     // bundle and send data
     private void sendMessenger() {
-        if (add = true) {
-            // just adding new info, dawg
-        } else {
-            // make an entire fragment
-            FragmentManager fragmentManager = getFragmentManager();
-            FirstFragment newFragment = new FirstFragment();
-            ParcelableArrayList pal = new ParcelableArrayList();
-            pal.setThing(mFeedModelList);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("articles", pal);
-            if (bundle != null) {
-                newFragment.setArguments(bundle);
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame
-                                , newFragment)
-                        .addToBackStack(null)
-                        .commit();
-            } else {
-                Log.d("MainActivity", "null message :( :( :(");
-            }
-        }
+        new MainActivity().doTheThing();
     }
 }

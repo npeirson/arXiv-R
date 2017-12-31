@@ -91,12 +91,12 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 SearchFragment newFragment = new SearchFragment();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame
-                                    , newFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame
+                                , newFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
                 /*
 
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -172,14 +172,71 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_first_layout) {
             category = "cs";
             setTitle("Computer Science");
-            new FetchFeedTask().FetchFeedTask(category,true);
+
+            Log.d("ummmmm","the thing is... " + isFinishing());
+            Boolean add = new FetchFeedTask().getAddState();
+            List<RssFeedModel> mFeedModelList = new FetchFeedTask().getmFeedModelList();
+
+            if (add == true) {
+                // just adding new info, dawg
+                Log.d("sendmessenger", String.valueOf(add));
+            } else {
+                // make an entire fragment
+                Log.d("sendmessenger","else");
+                FragmentManager fragmentManager = getFragmentManager();
+                Log.d("asdfasdfadsfasd", String.valueOf(fragmentManager));
+                FirstFragment newFragment = new FirstFragment();
+                ParcelableArrayList pal = new ParcelableArrayList();
+                pal.setThing(mFeedModelList);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("articles", pal);
+                if (bundle != null) {
+                    newFragment.setArguments(bundle);
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame
+                                    , newFragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    Log.d("MainActivity", "null message :( :( :(");
+
+                }
+            }
+            new FetchFeedTask(category,true,this);
+            Log.d("ummmmm","the thing is... " + isFinishing());
+            add = new FetchFeedTask().getAddState();
+            mFeedModelList = new FetchFeedTask().getmFeedModelList();
+
+            if (add == true) {
+                // just adding new info, dawg
+                Log.d("sendmessenger", String.valueOf(add));
+            } else {
+                // make an entire fragment
+                Log.d("sendmessenger","else");
+                FragmentManager fragmentManager = getFragmentManager();
+                Log.d("asdfasdfadsfasd", String.valueOf(fragmentManager));
+                FirstFragment newFragment = new FirstFragment();
+                ParcelableArrayList pal = new ParcelableArrayList();
+                pal.setThing(mFeedModelList);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("articles", pal);
+                if (bundle != null) {
+                    newFragment.setArguments(bundle);
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame
+                                    , newFragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    Log.d("MainActivity", "null message :( :( :(");
+
+                }
+            }
         } else if (id == R.id.nav_second_layout) {
             category = "math";
             setTitle("Mathematics");
-            new FetchFeedTask().FetchFeedTask(category,true);
+            new FetchFeedTask(category,true,this);
 
-            // ahhhhhhhh
-            String urlLink = ("https://export.arxiv.org/api/query?search_query=cat:" + category + "*&max_results=5");
         } else if (id == R.id.nav_slideshow) {
             try {
                 new bewkmarx();
@@ -236,6 +293,10 @@ public class MainActivity extends AppCompatActivity
             Log.d("oi", cat);
             category = cat;
         }
+    }
+    public void doTheThing() {
+        // first get the info
+
     }
 }
 

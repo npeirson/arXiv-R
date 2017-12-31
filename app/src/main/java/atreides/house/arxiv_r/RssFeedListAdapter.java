@@ -1,6 +1,7 @@
 package atreides.house.arxiv_r;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -18,6 +19,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +36,7 @@ public class RssFeedListAdapter
         extends RecyclerView.Adapter<RssFeedListAdapter.FeedModelViewHolder> {
 
     private List<RssFeedModel> mRssFeedModels;
+    public List<String> bkmx;
     public View XrssFeedView;
 
     public class FeedModelViewHolder extends RecyclerView.ViewHolder {
@@ -68,7 +74,25 @@ public class RssFeedListAdapter
                         final String trimmed = cardId.id.replace("http://arxiv.org/abs/","");
                         // does bookmark exist?
                         final File bmFile = new File(itemView.getContext().getFilesDir().getAbsolutePath() + "/bookmarks");
-                        FileInputStream fis = null;
+                        FileInputStream fis;
+                        try {
+                            //fos = this.openFileOutput("bookmarks", Context.MODE_PRIVATE);
+                            fis = new FileInputStream(bmFile);
+                            ObjectInputStream ois = new ObjectInputStream(fis);
+                            bkmx = (List<String>) ois.readObject();
+                            if (bkmx.contains(trimmed)){
+                                // change to bookmarked state
+                                itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.VISIBLE);
+                            } else {
+                                itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.VISIBLE);
+                            }
+                            ois.close();
+                            fis.close();
+                            Log.d("thing!!!!!", String.valueOf(bkmx));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        /*
                         try{
                             fis = new FileInputStream(bmFile);
                             byte fileContent[] = new byte[(int)bmFile.length()];
@@ -93,13 +117,37 @@ public class RssFeedListAdapter
                                 e.printStackTrace();
                             }
                         }
+                        */
 
                         // bookmark button press
                         itemView.findViewById(R.id.buttonBookmark).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                        FileOutputStream fos = null;
-                        FileInputStream fin = null;
+
+                                try {
+                                    //fos = this.openFileOutput("bookmarks", Context.MODE_PRIVATE);
+                                    FileInputStream fis = new FileInputStream(bmFile);
+                                    ObjectInputStream ois = new ObjectInputStream(fis);
+                                    bkmx = (List<String>) ois.readObject();
+                                    ois.close();
+                                    fis.close();
+                                    Log.d("thing!!!!!", String.valueOf(bkmx));
+                                    bkmx.add(trimmed);
+                                    Log.d("thing!!!!!", String.valueOf(bkmx));
+                                    FileOutputStream fos = new FileOutputStream(bmFile);
+                                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                                    oos.writeObject(bkmx);
+                                    oos.close();
+                                    fos.close();
+
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                /*
+                                FileOutputStream fos = null;
+                                FileInputStream fin = null;
+                                ArrayList<String> umm = null;
                                 try {
                                     fin = new FileInputStream(bmFile);
                                     byte fileContent[] = new byte[(int)bmFile.length()];
@@ -121,7 +169,7 @@ public class RssFeedListAdapter
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
-                                }
+                                }*/
                             }
                         });
 
@@ -168,7 +216,7 @@ public class RssFeedListAdapter
                         });
 
                         // read button press
-                       itemView.findViewById(R.id.buttonRead).setOnClickListener(new View.OnClickListener() {
+                        itemView.findViewById(R.id.buttonRead).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 Log.d("download","about to open");

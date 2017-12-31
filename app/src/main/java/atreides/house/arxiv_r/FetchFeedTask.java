@@ -34,8 +34,7 @@ import static android.content.ContentValues.TAG;
 public class FetchFeedTask extends AppCompatActivity {
     // initialize stuff and things
     public Context context;
-    public Boolean preD = false;
-    public Boolean add = false;
+    public FragmentManager fragMan;
     public List<RssFeedModel> mFeedModelList;
     public List<String> urlList;
     public String mFeedTitle;
@@ -46,27 +45,31 @@ public class FetchFeedTask extends AppCompatActivity {
     public String mFeedId;
     public String fpSave; // until I figure out how to pass this...
     public String baseUrl = "https://export.arxiv.org/api/query?";
-    public FragmentManager fragMan;
-
-    // for pulling info
-    public FetchFeedTask() { }
+    public Boolean preD = false;
+    public Boolean add = false;
+    public Boolean stackMe;
 
     // for "more cards" calls
-    public FetchFeedTask(String cat, int pos){
+    public FetchFeedTask(String fp, int pos, Context ctx, FragmentManager frag){
         // could add old data concatenation for increased efficiency
+        fragMan = frag;
+        context = ctx;
+
     }
 
     public FetchFeedTask(String fp, boolean dc, Context ctx, FragmentManager frag){
-        // for everyone else's sake...
         fragMan = frag;
         fpSave = fp;
         context = ctx;
         if ( dc == true ) {
             // for activity drawer calls
             preD = true;
+            stackMe = false;
             checkExists(fp, ctx);
         } else {
+            // for searches
             preD = false;
+            stackMe = true;
             Log.d("url",baseUrl + fp );
             new FetchFeedAsync().execute(baseUrl + fp + "&max_results=10");
         }
@@ -278,21 +281,8 @@ public class FetchFeedTask extends AppCompatActivity {
         }
     }
 
-    public boolean getAddState(){
-        return add;
-    }
-
-    public List<RssFeedModel> getmFeedModelList() {
-        return mFeedModelList;
-    }
-
-    // bundle and send data
+    // bundle and send data to fragment
     private void sendMessenger() {
-        // first get the info
-
-        Log.d("ummmmm","the thing is... " + fragMan);
-        Boolean add = new FetchFeedTask().getAddState();
-
         if (add == true) {
             // just adding new info, dawg
             Log.d("sendmessenger", String.valueOf(add));

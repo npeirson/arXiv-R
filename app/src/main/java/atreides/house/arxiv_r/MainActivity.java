@@ -3,17 +3,16 @@ package atreides.house.arxiv_r;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.Xml;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,26 +23,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.Toast;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public MainActivity getMyContext() {
+        return this;
+    }
 
     private static final String TAG = "MainActivity";
     public String category;
@@ -67,6 +61,21 @@ public class MainActivity extends AppCompatActivity
         File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
         if (bmFile == null || !bmFile.exists()) {
             new File("bookmarks");
+            List<String> bkmx = new ArrayList<>();
+
+            FileOutputStream fos;
+            try {
+                //fos = this.openFileOutput("bookmarks", Context.MODE_PRIVATE);
+                fos = new FileOutputStream(bmFile);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(bkmx);
+                oos.close();
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            /*
             FileOutputStream bos = null;
             String binit = "bookmarks:";
             try {
@@ -83,6 +92,7 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             }
+            */
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -215,24 +225,39 @@ public class MainActivity extends AppCompatActivity
             byte fileContent[] = new byte[(int)bmFile.length()];
             fis.read(fileContent);
             String bm = new String(fileContent);
-            // gonna be a bitch cuz you can only search for one at a time. shit.
+            ArrayList<String> umm = null;
+
+            for(int i = 0; i < fileContent.length; i++)
+            {
+            //    String str = fileContent[i];
+               // umm.add(str);
+            }
+            Log.d("ummmmm", String.valueOf(umm));
+            /*
+            ArrayList<Integer> pos = new ArrayList<>();
+            ArrayList<String> bml = new ArrayList<>();
 
             int lidx = 0;
             int idx = 0;
             String cat = "";
-
+            Log.d("derp",bm);
             while ((idx = bm.indexOf("\n", idx)) != -1)
             {
-                lidx = idx;
+                pos.add(idx);
                 idx++;
-                Log.d("derp", String.valueOf(idx));
-                cat = cat + "id_list=" + bm.indexOf(lidx)+idx;
-
+                //cat = cat + "id_list=" + bm.indexOf(lidx)+idx;
+            }
+            pos.size();
+            for (int i = 0 )
+            bml.add(bm.substring(pos[i]+2,[i+1]));
+            for (int lindx : pos) {
+                Log.d("umm", String.valueOf(lindx));
             }
 
-            String substr=bm.substring(bm.indexOf("\n"));
-            Log.d("oi", cat);
-            category = cat;
+            //String substr=bm.substring(bm.indexOf("\n"));
+            Log.d("oi", String.valueOf(bml));
+            //category = cat;
+        */
         }
     }
 }

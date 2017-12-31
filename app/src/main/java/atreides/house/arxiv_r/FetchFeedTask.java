@@ -1,18 +1,23 @@
 package atreides.house.arxiv_r;
 
+import android.app.Dialog;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Xml;
+import android.view.Window;
 import android.widget.Toast;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,19 +34,16 @@ import static android.content.ContentValues.TAG;
 
 /**
  * Created by the Kwisatz Haderach on 12/29/2017.
+ * The idea was to keep the heavy lifting out of the MainActivity to keep start-up time low, and hopefully make feature expansion easy in the future.
  */
 
 public class FetchFeedTask extends AppCompatActivity {
     // initialize stuff and things
     public Context context;
+    public Context bliptext;
     public FragmentManager fragMan;
     public List<RssFeedModel> mFeedModelList;
-    public String mFeedTitle;
-    public String mFeedSummary;
-    public String mFeedAuthor;
-    public String mFeedPublished;
-    public String mFeedUpdated;
-    public String mFeedId;
+    public String mFeedTitle, mFeedSummary, mFeedAuthor, mFeedPublished, mFeedUpdated, mFeedId;
     public String fpSave; // until I figure out how to pass this...
     public String baseUrl = "https://export.arxiv.org/api/query?";
     public Boolean preD = false;
@@ -50,6 +52,32 @@ public class FetchFeedTask extends AppCompatActivity {
     public Boolean bmks = false;
     public Boolean stackMe = false;
 
+    // blipz and chitz
+    private void blipMePleaseDaddy(int needs, @Nullable Context ctx) {
+        if ( ctx != null ) {
+            bliptext = ctx;
+            Dialog loadingBlip = new Dialog(ctx);
+            loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            loadingBlip.setContentView(R.layout.loading_blip);
+            loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            if (needs == 1) {
+                loadingBlip.show();
+            } else {
+                loadingBlip.dismiss();
+            }
+        } else {
+            Dialog loadingBlip = new Dialog(bliptext);
+            loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            loadingBlip.setContentView(R.layout.loading_blip);
+            loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            if (needs == 1) {
+                loadingBlip.show();
+            } else {
+                loadingBlip.dismiss();
+
+            }
+        }
+    }
 
     // for "more cards" calls
     public FetchFeedTask(String fp, int pos, Context ctx, FragmentManager frag){
@@ -59,6 +87,7 @@ public class FetchFeedTask extends AppCompatActivity {
     }
 
     public FetchFeedTask(String fp, boolean dc, Context ctx, FragmentManager frag){
+        blipMePleaseDaddy(1,ctx);
         fragMan = frag;
         fpSave = fp;
         context = ctx;
@@ -66,6 +95,7 @@ public class FetchFeedTask extends AppCompatActivity {
             // for activity drawer calls
             preD = true;
             stackMe = false;
+
             checkExists(fp, ctx);
         } else {
             // for searches
@@ -78,6 +108,7 @@ public class FetchFeedTask extends AppCompatActivity {
 
     // for bookmarks
     public FetchFeedTask(ArrayList<String> targetUrlList, Context ctx, FragmentManager frag) throws IOException, ClassNotFoundException {
+        blipMePleaseDaddy(1,ctx);
         fragMan = frag;
         context = ctx;
         bmks = true;
@@ -111,7 +142,6 @@ public class FetchFeedTask extends AppCompatActivity {
                 syncBookmarks(bmFile, oldBmks);
                 new FetchFeedAsync().execute(targetUrlList.toArray(new String[targetUrlList.size()]));
             }
-            //new FetchFeedAsync().execute(targetUrlList.toArray(new String[targetUrlList.size()]));
         }
     }
 
@@ -294,19 +324,19 @@ public class FetchFeedTask extends AppCompatActivity {
                     // category/search
                     urlLink = strings[0];
                 }
-                    try {
-                        URL url = new URL(urlLink);
-                        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-                        InputStream inputStream = conn.getInputStream();
-                        mFeedModelList = parseFeed(inputStream);
-                        return true;
+                try {
+                    URL url = new URL(urlLink);
+                    HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                    InputStream inputStream = conn.getInputStream();
+                    mFeedModelList = parseFeed(inputStream);
+                    return true;
 
-                    } catch (IOException e) {
-                        Log.e(TAG, "Error", e);
-                    } catch (XmlPullParserException e) {
-                        Log.e(TAG, "Error", e);
-                    }
-                    return false;
+                } catch (IOException e) {
+                    Log.e(TAG, "Error", e);
+                } catch (XmlPullParserException e) {
+                    Log.e(TAG, "Error", e);
+                }
+                return false;
             } else {
                 // many urls
                 for(int i=0;i<strings.length;i++) {
@@ -336,11 +366,12 @@ public class FetchFeedTask extends AppCompatActivity {
         protected void onPostExecute(Boolean success) {
             if (mFeedModelList.isEmpty()) {
                 if ( bmks == true ) {
+                    blipMePleaseDaddy(0,null);
                     Toast.makeText(context,
                             "You have no bookmarks",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    //,loadingBlip.dismiss();
+                    blipMePleaseDaddy(0,null);
                     Toast.makeText(context,
                             "Search returned no results",
                             Toast.LENGTH_LONG).show();
@@ -395,6 +426,7 @@ public class FetchFeedTask extends AppCompatActivity {
             pal.setThing(mFeedModelList);
             Bundle bundle = new Bundle();
             bundle.putParcelable("articles", pal);
+            blipMePleaseDaddy(0, null);
             if (bundle != null) {
                 newFragment.setArguments(bundle);
                 if ( stackMe == true ) {
@@ -413,3 +445,4 @@ public class FetchFeedTask extends AppCompatActivity {
         }
     }
 }
+

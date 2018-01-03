@@ -4,9 +4,6 @@ package atreides.house.arxiv_r;
  * Created by the Kwisatz Haderach on 12/23/2017.
  */
 
-import android.view.ViewManager;
-import android.widget.TextView;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,7 +25,7 @@ public class FileDownloader {
 
             InputStream inputStream = urlConnection.getInputStream();
             FileOutputStream fileOutputStream = new FileOutputStream(directory);
-            int totalSize = urlConnection.getContentLength();
+            int totalSize = urlConnection.getContentLength(); // might use later
 
             byte[] buffer = new byte[MEGABYTE];
             int bufferLength = 0;

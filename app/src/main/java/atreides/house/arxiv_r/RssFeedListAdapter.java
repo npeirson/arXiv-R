@@ -54,14 +54,19 @@ public class RssFeedListAdapter
                 public void onClick(View v) {
                     int sumState = itemView.findViewById(R.id.textViewSummary).getVisibility();
                     if (sumState != 0) {
+                        // bookmark dynamics
+                        final RssFeedModel cardId = mRssFeedModels.get(getAdapterPosition());
+                        final String trimmed = cardId.id.replace("http://arxiv.org/abs/","");
+                        // does bookmark exist?
+                        final File bmFile = new File(itemView.getContext().getFilesDir().getAbsolutePath() + "/bookmarks");
+
                         // expand view
                         itemView.findViewById(R.id.textViewSummary).setVisibility(itemView.VISIBLE);
                         itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.VISIBLE);
                         itemView.findViewById(R.id.buttonShare).setVisibility(itemView.VISIBLE);
 
                         // workaround for dynamic button text
-                        String docname = "test13";
-                        File docfile = new File((Environment.getExternalStorageDirectory() + "/arXiv/" + docname + ".pdf"));
+                        File docfile = new File((Environment.getExternalStorageDirectory() + "/arXiv/" + trimmed.replace("/","") + ".pdf"));
                         Log.d("download", " ------ >>>>>" + docfile.exists());
                         if (docfile.exists()) {
                             itemView.findViewById(R.id.buttonRead).setVisibility(itemView.VISIBLE);
@@ -69,11 +74,6 @@ public class RssFeedListAdapter
                             itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.VISIBLE);
                         }
 
-                        // bookmark dynamics
-                        final RssFeedModel cardId = mRssFeedModels.get(getAdapterPosition());
-                        final String trimmed = cardId.id.replace("http://arxiv.org/abs/","");
-                        // does bookmark exist?
-                        final File bmFile = new File(itemView.getContext().getFilesDir().getAbsolutePath() + "/bookmarks");
                         FileInputStream fis;
                         try {
                             //fos = this.openFileOutput("bookmarks", Context.MODE_PRIVATE);
@@ -88,7 +88,6 @@ public class RssFeedListAdapter
                             }
                             ois.close();
                             fis.close();
-                            Log.d("thing!!!!!", String.valueOf(bkmx));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -103,9 +102,7 @@ public class RssFeedListAdapter
                                     bkmx = (ArrayList<String>) ois.readObject();
                                     ois.close();
                                     fis.close();
-                                    Log.d("thing!!!!!", String.valueOf(bkmx));
                                     bkmx.add(trimmed);
-                                    Log.d("thing!!!!!", String.valueOf(bkmx));
                                     FileOutputStream fos = new FileOutputStream(bmFile);
                                     ObjectOutputStream oos = new ObjectOutputStream(fos);
                                     oos.writeObject(bkmx);
@@ -162,8 +159,7 @@ public class RssFeedListAdapter
                         itemView.findViewById(R.id.buttonRead).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Log.d("download","about to open");
-                                File pdfFile = new File(Environment.getExternalStorageDirectory() + "/arXiv/" + "test13.pdf");  // -> filename = maven.pdf
+                                File pdfFile = new File(Environment.getExternalStorageDirectory() + "/arXiv/" + trimmed.replace("/","") + ".pdf");
                                 Uri sharedFileUri = FileProvider.getUriForFile(view.getContext(), "atreides.house.arxiv_r.fileProvider", pdfFile);
                                 Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
                                 pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -184,7 +180,7 @@ public class RssFeedListAdapter
                             public void onClick(View view) {
                                 Log.d("download", "about to download");
                                 AsyncTask<String, Void, Void> dl = new DownloadFile();
-                                dl.execute("https://arxiv.org/pdf/1712.07660.pdf", "test13.pdf");
+                                dl.execute("https://arxiv.org/pdf/" + trimmed + ".pdf", trimmed.replace("/","") + ".pdf");
                                 Log.d("ummmm", "well " + dl.getStatus());
                                 XrssFeedView = itemView;
                                 if (dl.getStatus() == AsyncTask.Status.RUNNING) {
@@ -222,13 +218,11 @@ public class RssFeedListAdapter
     @Override
     public void onBindViewHolder(FeedModelViewHolder holder, int position) {
         final RssFeedModel rssFeedModel = mRssFeedModels.get(position);
-        String author = rssFeedModel.author;
         // date string conversion and clean-up
         SimpleDateFormat of = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         SimpleDateFormat nf = new SimpleDateFormat("dd MMMM yyyy");
         String pubstring = null;
         String upstring = null;
-        String aufull = null;
         try {
             Date pubdate = of.parse(rssFeedModel.published);
             Date update = of.parse(rssFeedModel.updated);
@@ -238,26 +232,11 @@ public class RssFeedListAdapter
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        // authors (adjust to prefs)
-        if (author.contains(",")) {
-            int lastIndex = 0;
-            int count = 1;
-
-            while(lastIndex != -1){
-                lastIndex = author.indexOf(",",lastIndex);
-                if(lastIndex != -1){
-                    count ++;
-                    lastIndex += ",".length();
-                }
-            }
-            // this is where an "et al." modifier could be added
-        }
-
-
+        // this is where an "et al." modifier could be added
         // post fields
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewTitle)).setText(rssFeedModel.title);
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewSummary)).setText(rssFeedModel.summary);
-        ((TextView)holder.rssFeedView.findViewById(R.id.textViewAuthors)).setText(rssFeedModel.author); // TODO dynamic adaptation
+        ((TextView)holder.rssFeedView.findViewById(R.id.textViewAuthors)).setText(rssFeedModel.author);
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewPublished)).setText("Published: " + pubstring);
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewUpdated)).setText("Updated: " + upstring);
     }
@@ -271,8 +250,8 @@ public class RssFeedListAdapter
 
         @Override
         protected Void doInBackground(String... strings) {
-            String fileUrl = strings[0];   // -> http://maven.apache.org/maven-1.x/maven.pdf
-            String fileName = strings[1];  // -> maven.pdf
+            String fileUrl = strings[0];
+            String fileName = strings[1];
             String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
             File folder = new File(extStorageDirectory, "arXiv");
             Log.d("DF","Gonna make dir");

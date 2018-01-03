@@ -19,7 +19,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -219,11 +222,44 @@ public class RssFeedListAdapter
     @Override
     public void onBindViewHolder(FeedModelViewHolder holder, int position) {
         final RssFeedModel rssFeedModel = mRssFeedModels.get(position);
+        String author = rssFeedModel.author;
+        // date string conversion and clean-up
+        SimpleDateFormat of = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        SimpleDateFormat nf = new SimpleDateFormat("dd MMMM yyyy");
+        String pubstring = null;
+        String upstring = null;
+        String aufull = null;
+        try {
+            Date pubdate = of.parse(rssFeedModel.published);
+            Date update = of.parse(rssFeedModel.updated);
+            pubstring = nf.format(pubdate);
+            upstring = nf.format(update);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        // authors (adjust to prefs)
+        if (author.contains(",")) {
+            int lastIndex = 0;
+            int count = 1;
+
+            while(lastIndex != -1){
+                lastIndex = author.indexOf(",",lastIndex);
+                if(lastIndex != -1){
+                    count ++;
+                    lastIndex += ",".length();
+                }
+            }
+            // this is where an "et al." modifier could be added
+        }
+
+
+        // post fields
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewTitle)).setText(rssFeedModel.title);
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewSummary)).setText(rssFeedModel.summary);
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewAuthors)).setText(rssFeedModel.author); // TODO dynamic adaptation
-        ((TextView)holder.rssFeedView.findViewById(R.id.textViewPublished)).setText("Published: " + rssFeedModel.published);
-        ((TextView)holder.rssFeedView.findViewById(R.id.textViewUpdated)).setText("Updated: " + rssFeedModel.updated);
+        ((TextView)holder.rssFeedView.findViewById(R.id.textViewPublished)).setText("Published: " + pubstring);
+        ((TextView)holder.rssFeedView.findViewById(R.id.textViewUpdated)).setText("Updated: " + upstring);
     }
 
     @Override

@@ -24,6 +24,7 @@
                 android:layout_marginTop="8dp"
                 android:textSize="@dimen/textview_big_0_size"
                 android:textStyle="bold"
+                android:textAlignment="viewStart"
                 tools:layout_editor_absoluteX="15dp"
                 tools:layout_editor_absoluteY="16dp" />
 
@@ -33,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/cardPadding"
                 android:textSize="@dimen/textview_small_size"
+                android:justificationMode="inter_word"
                 android:layout_below="@id/textViewTitle"
                 android:visibility="gone"
                 />
@@ -43,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/cardPadding"
                 android:textSize="@dimen/textview_middle_size"
+                android:textStyle="bold"
                 android:layout_below="@id/textViewSummary" />
 
             <TextView

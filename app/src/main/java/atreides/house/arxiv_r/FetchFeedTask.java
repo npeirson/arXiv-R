@@ -40,54 +40,40 @@ import static android.content.ContentValues.TAG;
 public class FetchFeedTask extends AppCompatActivity {
     // initialize stuff and things
     public Context context;
-    public Context bliptext;
     public FragmentManager fragMan;
     public List<RssFeedModel> mFeedModelList;
-    public String mFeedTitle, mFeedSummary, mFeedAuthor, mFeedPublished, mFeedUpdated, mFeedId;
+    public Dialog loadingBlip;
+    public String mFeedTitle, mFeedSummary, mFeedPublished, mFeedUpdated, mFeedId;
     public String fpSave; // until I figure out how to pass this...
     public String baseUrl = "https://export.arxiv.org/api/query?";
+    public String mFeedAuthor;
     public Boolean preD = false;
     public Boolean add = false;
     public Boolean love = false;
     public Boolean bmks = false;
     public Boolean stackMe = false;
 
-    // blipz and chitz
-    private void blipMePleaseDaddy(int needs, @Nullable Context ctx) {
-        if ( ctx != null ) {
-            bliptext = ctx;
-            Dialog loadingBlip = new Dialog(ctx);
-            loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            loadingBlip.setContentView(R.layout.loading_blip);
-            loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            if (needs == 1) {
-                loadingBlip.show();
-            } else {
-                loadingBlip.dismiss();
-            }
-        } else {
-            Dialog loadingBlip = new Dialog(bliptext);
-            loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            loadingBlip.setContentView(R.layout.loading_blip);
-            loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            if (needs == 1) {
-                loadingBlip.show();
-            } else {
-                loadingBlip.dismiss();
-
-            }
-        }
-    }
-
     // for "more cards" calls
     public FetchFeedTask(String fp, int pos, Context ctx, FragmentManager frag){
+        // blip me please, daddy
+        loadingBlip = new Dialog(ctx);
+        loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        loadingBlip.setContentView(R.layout.loading_blip);
+        loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        loadingBlip.show();
         // could add old data concatenation for increased efficiency
         fragMan = frag;
         context = ctx;
     }
 
     public FetchFeedTask(String fp, boolean dc, Context ctx, FragmentManager frag){
-        blipMePleaseDaddy(1,ctx);
+        // blip me please, daddy
+        loadingBlip = new Dialog(ctx);
+        loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        loadingBlip.setContentView(R.layout.loading_blip);
+        loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        loadingBlip.show();
+
         fragMan = frag;
         fpSave = fp;
         context = ctx;
@@ -108,7 +94,13 @@ public class FetchFeedTask extends AppCompatActivity {
 
     // for bookmarks
     public FetchFeedTask(ArrayList<String> targetUrlList, Context ctx, FragmentManager frag) throws IOException, ClassNotFoundException {
-        blipMePleaseDaddy(1,ctx);
+        // blip me please, daddy
+        loadingBlip = new Dialog(ctx);
+        loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        loadingBlip.setContentView(R.layout.loading_blip);
+        loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        loadingBlip.show();
+
         fragMan = frag;
         context = ctx;
         bmks = true;
@@ -210,6 +202,7 @@ public class FetchFeedTask extends AppCompatActivity {
         String published = null;
         String updated = null;
         String id = null;
+        int j = 0;
 
         boolean isItem = false;
         List<RssFeedModel> items = new ArrayList<>();
@@ -249,12 +242,19 @@ public class FetchFeedTask extends AppCompatActivity {
                 }
 
                 if (name.equalsIgnoreCase("title")) {
-                    title = result;
+                    title = result.replace("\n","");
                 } else if (name.equalsIgnoreCase("summary")) {
-                    summary = result;
+                    summary = result.replace("\n","");
                 } else if (name.equalsIgnoreCase("author")) {
                     xmlPullParser.next();
-                    author = xmlPullParser.getText();
+                    if ( j == 0 ) {
+                        author = xmlPullParser.getText();
+                    } if ( j >= 1 ) {
+                        author = author + ", " + xmlPullParser.getText();
+                    }
+                    Log.d("author",author);
+                    j++;
+
                 } else if (name.equalsIgnoreCase("published")) {
                     published = result;
                 } else if (name.equalsIgnoreCase("updated")) {
@@ -281,6 +281,7 @@ public class FetchFeedTask extends AppCompatActivity {
                     published = null;
                     updated = null;
                     isItem = false;
+                    j = 0;
                 }
             }
 
@@ -366,12 +367,12 @@ public class FetchFeedTask extends AppCompatActivity {
         protected void onPostExecute(Boolean success) {
             if (mFeedModelList.isEmpty()) {
                 if ( bmks == true ) {
-                    blipMePleaseDaddy(0,null);
+                    loadingBlip.dismiss();
                     Toast.makeText(context,
                             "You have no bookmarks",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    blipMePleaseDaddy(0,null);
+                    loadingBlip.dismiss();
                     Toast.makeText(context,
                             "Search returned no results",
                             Toast.LENGTH_LONG).show();
@@ -426,7 +427,7 @@ public class FetchFeedTask extends AppCompatActivity {
             pal.setThing(mFeedModelList);
             Bundle bundle = new Bundle();
             bundle.putParcelable("articles", pal);
-            blipMePleaseDaddy(0, null);
+            loadingBlip.dismiss();
             if (bundle != null) {
                 newFragment.setArguments(bundle);
                 if ( stackMe == true ) {

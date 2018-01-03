@@ -42,7 +42,6 @@ public class ParcelableArrayList extends ArrayList<String> implements Parcelable
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        Log.d("ParcelableArrayList","At least this is running...");
         out.writeList(this.myThing);
         out.writeString(this.title);
     }

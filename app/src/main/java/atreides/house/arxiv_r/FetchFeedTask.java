@@ -244,7 +244,7 @@ public class FetchFeedTask extends AppCompatActivity {
                 if (name.equalsIgnoreCase("title")) {
                     title = result.replace("\n","");
                 } else if (name.equalsIgnoreCase("summary")) {
-                    summary = result.replace("\n","");
+                    summary = result.replace("\n"," ");
                 } else if (name.equalsIgnoreCase("author")) {
                     xmlPullParser.next();
                     if ( j == 0 ) {

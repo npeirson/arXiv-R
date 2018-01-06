@@ -34,10 +34,10 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d("FAB", "Fabulous!" + getView());
-                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, new FavoritesAddFragment());
-                ft.addToBackStack(null);
-                ft.commit();
+                //final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                //ft.replace(R.id.content_frame, new FavoritesAddFragment());
+                //ft.addToBackStack(null);
+                //ft.commit();
             }
         });
 

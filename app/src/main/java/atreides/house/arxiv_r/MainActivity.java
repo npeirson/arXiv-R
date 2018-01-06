@@ -169,7 +169,12 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         } else if (id == R.id.nav_manage) {
-
+            FavoritesAddFrag newFrag = new FavoritesAddFrag();
+            FragmentManager fragMan = getFragmentManager();
+            fragMan.beginTransaction()
+                    .replace(R.id.content_frame, newFrag)
+                    .addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {

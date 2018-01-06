@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="@android:color/background_light">
 
-    <ExpandableListView
-        android:id="@+id/favoritesAddListView"
+    <ListView
+        android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/lightGray"
-        android:dividerHeight="1dp" />
+        android:layout_height="match_parent"
+        android:dividerHeight="1dp"
+        android:divider="@color/lightGray" />
+
 </FrameLayout>

@@ -32,18 +32,20 @@ import java.util.List;
  * Check out the acknowledgements section in "about"
  */
 
+// TODO verify that viewholder is working properly... I kinda doubt it.
+
 public class RssFeedListAdapter
         extends RecyclerView.Adapter<RssFeedListAdapter.FeedModelViewHolder> {
 
     private List<RssFeedModel> mRssFeedModels;
-    public ArrayList<String> bkmx;
-    public View XrssFeedView;
+    private ArrayList<String> bkmx;
+    private View XrssFeedView;
 
     public class FeedModelViewHolder extends RecyclerView.ViewHolder {
-        public View rssFeedView;
+        View rssFeedView;
         public String status;
 
-        public FeedModelViewHolder(View v) {
+        FeedModelViewHolder(View v) {
             super(v);
             rssFeedView = v;
             XrssFeedView = v;
@@ -126,9 +128,7 @@ public class RssFeedListAdapter
                                     bkmx = (ArrayList<String>) ois.readObject();
                                     ois.close();
                                     fis.close();
-                                    Log.d("thing!!!!!", String.valueOf(bkmx));
                                     bkmx.remove(trimmed);
-                                    Log.d("thing!!!!!", String.valueOf(bkmx));
                                     FileOutputStream fos = new FileOutputStream(bmFile);
                                     ObjectOutputStream oos = new ObjectOutputStream(fos);
                                     oos.writeObject(bkmx);

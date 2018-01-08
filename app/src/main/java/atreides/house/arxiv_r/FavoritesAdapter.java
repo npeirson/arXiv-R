@@ -2,23 +2,40 @@ package atreides.house.arxiv_r;
 
 /**
  * Created by the Kwisatz Haderach on 1/5/2018.
+ * Based on demonstration by Oleskii K. Thanks dude.
+ * Check him out: https://github.com/shamanland
  */
-
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class FavoritesAdapter extends BaseAdapter {
     private final ArrayList mData;
 
-    public FavoritesAdapter(Map<String, String> map) {
+    public FavoritesAdapter() {
         mData = new ArrayList();
+        LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        // oh look, it's the categories
+        map.put("Custom Favorite...","ursssu");
+        map.put("Astrophysics","url");
+        map.put("Computer Science","urk");
+        map.put("Condensed Matter","urj");
+        map.put("General Physics","urh");
+        map.put("General Relativity","urg");
+        map.put("High Energy Physics","urf");
+        map.put("Mathematical Physics","urd");
+        map.put("Mathematics","urs");
+        map.put("Nonlinear Science","ura");
+        map.put("Nuclear Theory","urp");
+        map.put("Quantitative Biology","uro");
+        map.put("Quantum Physics","rui");
+        map.put("Statistics","uri");
         mData.addAll(map.entrySet());
     }
 
@@ -34,25 +51,19 @@ public class FavoritesAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        // TODO implement you own logic with ID
-        return 0;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final View result;
-
         if (convertView == null) {
-            result = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorites_add_layout, parent, false);
+            result = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorites_item, parent, false);
         } else {
             result = convertView;
         }
-
         Map.Entry<String, String> item = getItem(position);
-
-        // TODO replace findViewById by ViewHolder
         ((TextView) result.findViewById(android.R.id.text1)).setText(item.getKey());
-        ((TextView) result.findViewById(android.R.id.text2)).setText(item.getValue());
 
         return result;
     }

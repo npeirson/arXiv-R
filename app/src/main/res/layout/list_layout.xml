@@ -13,6 +13,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:padding="8dp">
 
             <TextView
@@ -29,24 +30,13 @@
                 tools:layout_editor_absoluteY="16dp" />
 
             <TextView
-                android:id="@+id/textViewSummary"
-                android:layout_width="@dimen/cardTextWidth"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/cardPadding"
-                android:textSize="@dimen/textview_small_size"
-                android:justificationMode="inter_word"
-                android:layout_below="@id/textViewTitle"
-                android:visibility="gone"
-                />
-            
-            <TextView
                 android:id="@+id/textViewAuthors"
                 android:layout_width="@dimen/cardTextWidth"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/cardPadding"
                 android:textSize="@dimen/textview_middle_size"
                 android:textStyle="bold"
-                android:layout_below="@id/textViewSummary" />
+                android:layout_below="@id/textViewTitle" />
 
             <TextView
                 android:id="@+id/textViewPublished"
@@ -65,13 +55,24 @@
                 android:layout_toEndOf="@id/textViewPublished"
                 android:padding="@dimen/cardPadding"
                 android:textSize="@dimen/textview_small_size" />
+
+            <TextView
+                android:id="@+id/textViewSummary"
+                android:layout_width="@dimen/cardTextWidth"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/cardPadding"
+                android:textSize="@dimen/textview_small_size"
+                android:justificationMode="inter_word"
+                android:layout_below="@id/textViewPublished"
+                android:visibility="gone"
+                />
             
             <Button
                 android:id="@+id/buttonBookmark"
                 android:background="@drawable/button_clean_left"
                 android:layout_width="@dimen/cardButtonsWidth"
                 android:layout_height="@dimen/cardButtonHeight"
-                android:layout_below="@id/textViewPublished"
+                android:layout_below="@id/textViewSummary"
                 android:layout_gravity="start"
                 android:layout_marginEnd="2dp"
                 android:layout_marginTop="@dimen/standardPadding"
@@ -88,7 +89,7 @@
                 android:background="@drawable/button_marked_left"
                 android:layout_width="@dimen/cardButtonsWidth"
                 android:layout_height="@dimen/cardButtonHeight"
-                android:layout_below="@id/textViewPublished"
+                android:layout_below="@id/textViewSummary"
                 android:layout_gravity="start"
                 android:layout_marginEnd="2dp"
                 android:layout_marginTop="@dimen/standardPadding"
@@ -105,7 +106,7 @@
                 android:background="@drawable/button_clean"
                 android:layout_width="@dimen/cardButtonsWidth"
                 android:layout_height="@dimen/cardButtonHeight"
-                android:layout_below="@id/textViewUpdated"
+                android:layout_below="@id/textViewSummary"
                 android:layout_toEndOf="@id/buttonBookmark"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/standardPadding"
@@ -122,7 +123,7 @@
                 android:background="@drawable/button_clean_right"
                 android:layout_width="@dimen/cardButtonsWidth"
                 android:layout_height="@dimen/cardButtonHeight"
-                android:layout_below="@id/textViewUpdated"
+                android:layout_below="@id/textViewSummary"
                 android:layout_toEndOf="@+id/buttonShare"
                 android:layout_alignEnd="@id/textViewUpdated"
                 android:layout_gravity="end"
@@ -141,7 +142,7 @@
                 android:background="@drawable/button_clean_right"
                 android:layout_width="@dimen/cardButtonsWidth"
                 android:layout_height="@dimen/cardButtonHeight"
-                android:layout_below="@id/textViewUpdated"
+                android:layout_below="@id/textViewSummary"
                 android:layout_toEndOf="@+id/buttonShare"
                 android:layout_alignEnd="@id/textViewUpdated"
                 android:layout_gravity="end"
@@ -160,7 +161,7 @@
                 android:background="@drawable/button_clean_right"
                 android:layout_width="@dimen/cardButtonsWidth"
                 android:layout_height="@dimen/cardButtonHeight"
-                android:layout_below="@id/textViewUpdated"
+                android:layout_below="@id/textViewSummary"
                 android:layout_toEndOf="@+id/buttonShare"
                 android:layout_alignEnd="@id/textViewUpdated"
                 android:layout_gravity="end"

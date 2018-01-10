@@ -162,5 +162,6 @@
     <string name="search_subject_prompt">Select Category</string>
     <string name="search_subject_physics_prompt">Select Physics Subcategory</string>
     <string name="search_spinner_prompt">Select</string>
+    <string name="title_activity_favorites">FavoritesActivity</string>
 
 </resources>

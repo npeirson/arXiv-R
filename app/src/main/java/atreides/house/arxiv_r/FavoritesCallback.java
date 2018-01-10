@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 
 /**
  * Created by the Kwisatz Haderach on 1/9/2018.
@@ -54,7 +55,8 @@ public class FavoritesCallback extends ItemTouchHelper.Callback{
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
-        // remove item
+        mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+        Log.d("you","monster!");
     }
 
     @Override

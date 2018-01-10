@@ -3,6 +3,7 @@ package atreides.house.arxiv_r;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Environment;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdapter.viewHolder> implements FavoritesInterfaces.touchHelperAdapter {
 
+    public View view;
     public LinkedHashMap<String,String> mFavorites = new LinkedHashMap<>();
 
     private final FavoritesInterfaces.OnStartDragListener mDragStartListener;
@@ -50,7 +52,7 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
 
     @Override
     public FavoritesListAdapter.viewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorites_list_item, parent, false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorites_list_item, parent, false);
         viewHolder itemViewHolder = new viewHolder(view);
         return itemViewHolder;
     }
@@ -66,9 +68,10 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                     mDragStartListener.onStartDrag(holder);
-                }
+                 }
                 return false;
             }
+
         });
     }
 
@@ -88,9 +91,10 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
 
     @Override
     public void onItemDismiss(int position) {
-        Log.d("ddfajsdlfkjsdf","yep yep yep yep yep yep");
         mFavorites.remove(position);
         notifyItemRemoved(position);
+        Snackbar.make(view, "Item removed", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new FavoritesInterfaces.undoListener()).show();
     }
 
     public static class viewHolder extends RecyclerView.ViewHolder implements FavoritesInterfaces.touchHelperHolder {
@@ -113,6 +117,7 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
         public void onItemClear() {
             itemView.setBackgroundColor(0);
         }
+
     }
     public static void hashSwap(LinkedHashMap<String,String> input, int index, int outdex) {
         if (index >= 0 && index <= input.size()) {

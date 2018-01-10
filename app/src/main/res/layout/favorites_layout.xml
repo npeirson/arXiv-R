@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:id="@+id/favoritesLayout" android:background="@android:color/background_light">
+    android:layout_height="match_parent" android:id="@+id/favoritesLayouttest" android:background="@android:color/background_light">
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerDerp"
+        android:id="@+id/recyclerDerptest"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabFavorites"
+        android:id="@+id/fabFavoritestest"
         android:layout_width="@dimen/fab_size_normal"
         android:layout_height="@dimen/fab_size_normal"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="@dimen/quadPadding" />
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

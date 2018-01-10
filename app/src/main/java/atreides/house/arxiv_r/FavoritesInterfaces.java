@@ -2,6 +2,8 @@ package atreides.house.arxiv_r;
 
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,5 +41,14 @@ public class FavoritesInterfaces {
             e.printStackTrace();
         }
         return favorites;
+    }
+
+    public static class undoListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+
+            // Code to undo the user's last action
+        }
     }
 }

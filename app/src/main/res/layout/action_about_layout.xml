@@ -47,7 +47,7 @@
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/textview_small_size"
         android:textAlignment="center"
-        android:text="Thanks to the following for their contributions:\nApache Commons, Oguz Bilgener, Zack Dawood, everyone on stack overflow, more later."
+        android:text="Thanks to the following for their contributions:\nApache Commons, Paul Burke, Oguz Bilgener, Zack Dawood, everyone on stack overflow, more later."
         />
     <!-- Dade Murphy, Kate Libby, Rings of Saturn" -->
 

@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Created by the Kwisatz Haderach on 12/14/2017.
@@ -25,8 +24,6 @@ import java.util.ArrayList;
 
 public class FavoritesFragment extends Fragment implements FavoritesInterfaces.OnStartDragListener {
     View myView;
-    //File favFile = new File(getContext().getFilesDir().getAbsolutePath() + "/favorites");
-    //File favFile = new File(Environment.getDataDirectory().getAbsolutePath() + "/favorites");
     File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
     private ItemTouchHelper mItemTouchHelper;
 
@@ -36,7 +33,7 @@ public class FavoritesFragment extends Fragment implements FavoritesInterfaces.O
         // build on first run
         if (!favFile.exists()) {
             try {
-                ArrayList<String> init = new ArrayList<>();
+                LinkedHashMap<String,String> init = new LinkedHashMap<>();
                 FileOutputStream fos = new FileOutputStream(favFile);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(init);
@@ -74,7 +71,6 @@ public class FavoritesFragment extends Fragment implements FavoritesInterfaces.O
         fabFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("FAB", "Fabulous!" + getView());
                 final FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, new FavoritesAddFrag());
                 ft.addToBackStack(null);
@@ -86,7 +82,7 @@ public class FavoritesFragment extends Fragment implements FavoritesInterfaces.O
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.favoritesTitle);
-        FavoritesInterfaces.getFavorites();
+        //FavoritesInterfaces.getFavorites();
     }
 
     @Override

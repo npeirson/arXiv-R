@@ -2,6 +2,7 @@ package atreides.house.arxiv_r;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Created by the Kwisatz Haderach on 12/14/2017.
@@ -39,7 +40,6 @@ public class FavoritesAddFrag extends Fragment {
         final ListView mListView = myView.findViewById(android.R.id.list);
         mListView.setAdapter(adapter);
 
-
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
@@ -47,21 +47,18 @@ public class FavoritesAddFrag extends Fragment {
                 String value = adapter.getItem(pos).getValue();
                 String key = adapter.getItem(pos).getKey();
 
-                Log.d("onclickthing1", key);
-                Log.d("value of ",value);
-
-                File favFile = new File(getContext().getFilesDir().getAbsolutePath() + "/favorites");
+                File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
                 try {
                     FileInputStream fis = new FileInputStream(favFile);
                     ObjectInputStream ois = new ObjectInputStream(fis);
-                    ArrayList<String> cFavs = (ArrayList<String>) ois.readObject();
+                    LinkedHashMap<String,String> cFavs = (LinkedHashMap<String,String>) ois.readObject();
                     ois.close();
                     fis.close();
-                    if (cFavs.contains(value)) {
+                    if (cFavs.get(key) != null) {
                         Toast.makeText(view.getContext(), key + " already in favorites!", Toast.LENGTH_SHORT).show();
                     } else {
                         // add selected to favorites
-                        cFavs.add(value);
+                        cFavs.put(key,value);
                         FileOutputStream fos = new FileOutputStream(favFile);
                         ObjectOutputStream oos = new ObjectOutputStream(fos);
                         oos.writeObject(cFavs);

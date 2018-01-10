@@ -104,7 +104,7 @@ public class FetchFeedTask extends AppCompatActivity {
         fragMan = frag;
         context = ctx;
         bmks = true;
-        File oldBmks = new File(ctx.getFilesDir().getAbsolutePath() + "oldbookmarks");
+        File oldBmks = new File(ctx.getFilesDir().getAbsolutePath() + "/oldbookmarks");
         File bmFile = new File(ctx.getFilesDir().getAbsolutePath() + "/bookmarks");
         if (oldBmks == null || !oldBmks.exists()) {
             // pop the cherry

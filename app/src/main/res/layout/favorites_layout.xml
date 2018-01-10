@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent" android:id="@+id/favoritesLayout" android:background="@android:color/background_light">
-
-    <ListView
-        android:id="@+id/favoritesListView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerDerp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabFavorites"
         android:layout_width="@dimen/fab_size_normal"
         android:layout_height="@dimen/fab_size_normal"
-        android:layout_gravity="center_horizontal|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/quadPadding" />
-</FrameLayout>
+</RelativeLayout>

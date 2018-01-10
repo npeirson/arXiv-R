@@ -1,7 +1,6 @@
 package atreides.house.arxiv_r;
 
 import android.app.Fragment;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -11,10 +10,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -53,7 +50,7 @@ public class FavoritesAddFrag extends Fragment {
                 Log.d("onclickthing1", key);
                 Log.d("value of ",value);
 
-                File favFile = getContext().getFileStreamPath("bookmarks");
+                File favFile = new File(getContext().getFilesDir().getAbsolutePath() + "/favorites");
                 try {
                     FileInputStream fis = new FileInputStream(favFile);
                     ObjectInputStream ois = new ObjectInputStream(fis);
@@ -71,13 +68,11 @@ public class FavoritesAddFrag extends Fragment {
                         oos.close();
                         fos.close();
                         // now destroy fragment
-                        getFragmentManager().beginTransaction().remove(FavoritesAddFrag.this).commitAllowingStateLoss();
+                        getFragmentManager().popBackStack();
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-
-
             }
         });
         return myView;

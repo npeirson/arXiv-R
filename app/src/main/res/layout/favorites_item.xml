@@ -4,9 +4,7 @@
     android:id="@+id/favoritesItem"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
-
+    android:layout_height="wrap_content" >
     <TextView
         android:id="@android:id/text1"
         android:layout_width="wrap_content"
@@ -15,7 +13,5 @@
         android:layout_marginTop="@dimen/doublePadding"
         android:layout_gravity="center_vertical"
         android:padding="@dimen/triplePadding"
-        android:textSize="@dimen/textview_middle_plus_size"
-        />
-
+        android:textSize="@dimen/textview_middle_plus_size" />
 </LinearLayout>

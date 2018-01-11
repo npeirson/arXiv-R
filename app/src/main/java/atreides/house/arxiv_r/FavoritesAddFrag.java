@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
+
+import static android.view.View.VISIBLE;
 
 /**
  * Created by the Kwisatz Haderach on 12/14/2017.
@@ -79,5 +82,13 @@ public class FavoritesAddFrag extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.favoritesAddTitle);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FloatingActionButton fabFav = getActivity().findViewById(R.id.fabFavorites);
+        fabFav.setVisibility(VISIBLE);
+        getActivity().setTitle("Favorites");
     }
 }

@@ -56,7 +56,6 @@ public class FavoritesCallback extends ItemTouchHelper.Callback{
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
         mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
-        Log.d("you","monster!");
     }
 
     @Override

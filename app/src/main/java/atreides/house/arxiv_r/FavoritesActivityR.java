@@ -19,10 +19,14 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 
 public class FavoritesActivityR extends AppCompatActivity implements FavoritesInterfaces.OnStartDragListener {
 
     File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
+    public FloatingActionButton fabFav;
     private ItemTouchHelper mItemTouchHelper;
     public boolean focused = true;
 
@@ -32,7 +36,7 @@ public class FavoritesActivityR extends AppCompatActivity implements FavoritesIn
         setContentView(R.layout.activity_favorites_r);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        final FloatingActionButton fabFav = findViewById(R.id.fabFavorites);
+        fabFav = findViewById(R.id.fabFavorites);
         fabFav.setImageResource(android.R.drawable.ic_menu_add);
         fabFav.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +45,7 @@ public class FavoritesActivityR extends AppCompatActivity implements FavoritesIn
                 ft.replace(R.id.favorites_frame, new FavoritesAddFrag());
                 ft.addToBackStack(null);
                 ft.commit();
+                fabFav.setVisibility(GONE);
                 focused = false;
             }
         });
@@ -77,7 +82,6 @@ public class FavoritesActivityR extends AppCompatActivity implements FavoritesIn
     public void onResume() {
         super.onResume();
         setTitle("Favorites");
-        focused = true;
     }
 
     @Override
@@ -86,7 +90,6 @@ public class FavoritesActivityR extends AppCompatActivity implements FavoritesIn
             case android.R.id.home:
                 if (focused == false) {
                     getFragmentManager().popBackStack();
-                    setTitle("Favorites");
                     focused = true;
             } else {
                     this.finish();

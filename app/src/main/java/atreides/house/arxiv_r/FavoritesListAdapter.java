@@ -30,7 +30,7 @@ import java.util.Map;
 public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdapter.viewHolder> implements FavoritesInterfaces.touchHelperAdapter {
 
     public View view;
-    public LinkedHashMap<String,String> mFavorites = new LinkedHashMap<>();
+    public LinkedHashMap<String, String> mFavorites = new LinkedHashMap<>();
 
     private final FavoritesInterfaces.OnStartDragListener mDragStartListener;
 
@@ -41,7 +41,7 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
         try {
             FileInputStream fis = new FileInputStream(favFile);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            mFavorites = (LinkedHashMap<String,String>) ois.readObject();
+            mFavorites = (LinkedHashMap<String, String>) ois.readObject();
             ois.close();
             fis.close();
             // notify dataset changed
@@ -62,13 +62,13 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
         final ArrayList mSet;
         mSet = new ArrayList();
         mSet.addAll(mFavorites.entrySet());
-        holder.textView.setText(((Map.Entry<String,String>) mSet.get(position)).getKey());
+        holder.textView.setText(((Map.Entry<String, String>) mSet.get(position)).getKey());
         holder.handleView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                     mDragStartListener.onStartDrag(holder);
-                 }
+                }
                 return false;
             }
 
@@ -83,15 +83,15 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
         Log.d("Trying to move an item", "or something like that");
-        //Collections.swap(mFavorites, fromPosition, toPosition);
-        hashSwap(mFavorites,fromPosition,toPosition);
+        mFavorites = hashSwap(mFavorites, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
         return true;
     }
 
     @Override
     public void onItemDismiss(int position) {
-        mFavorites.remove(position);
+        mFavorites = hashRemove(mFavorites, position);
+        //mFavorites.remove(position);
         notifyItemRemoved(position);
         Snackbar.make(view, "Item removed", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new FavoritesInterfaces.undoListener()).show();
@@ -119,42 +119,41 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
         }
 
     }
-    public static void hashSwap(LinkedHashMap<String,String> input, int index, int outdex) {
-        if (index >= 0 && index <= input.size()) {
 
-            LinkedHashMap<String,String> output = new LinkedHashMap<>();
+    /**
+     * swaps any two sets (keys and values) in a LinkedHashMap
+     * it's basically Collections.swap, but for LinkedHashMaps.
+     * used for re-ordering favorites when it so pleases the user
+     */
+
+    private static LinkedHashMap<String,String> hashSwap(LinkedHashMap<String, String> input, int index, int outdex) {
+        LinkedHashMap<String,String> output = new LinkedHashMap<>();
+        if (index >= 0 && index <= input.size()) {
             final ArrayList mData;
             mData = new ArrayList();
             mData.addAll(input.entrySet());
-            String keyIn = ((Map.Entry<String,String>) mData.get(index)).getKey();
-            String valueIn = ((Map.Entry<String,String>) mData.get(index)).getValue();
-            Log.d("Key in: ", keyIn);
-            Log.d("Value in: ", valueIn);
-            /*
-            int i = 0;
-            if (index == 0) {
-                output.put(key,value);
-                output.putAll(input);
-            } else {
-                for (Map.Entry<String,String> entry : input.entrySet()) {
-                    if (i == index) {
-                        output.put(key,value);
+            String keyIn = ((Map.Entry<String, String>) mData.get(index)).getKey();
+            String valueIn = ((Map.Entry<String, String>) mData.get(index)).getValue();
+            String keyOut = ((Map.Entry<String, String>) mData.get(outdex)).getKey();
+            String valueOut = ((Map.Entry<String, String>) mData.get(outdex)).getValue();
+
+            for (int i = 0; i < input.size(); i++) {
+                if (i == index) {
+                    output.put(keyIn, valueIn);
+                } else if (i == outdex) {
+                    output.put(keyOut, valueOut);
+                } else {
+                    for (Map.Entry<String, String> entry : input.entrySet()) {
+                        output.put(entry.getKey(), entry.getValue());
                     }
-                    output.put(entry.getKey(), entry.getValue());
-                    i++;
                 }
             }
-            if (index == input.size()) {
-                output.put(key,value);
-            }
-            */
-            input.clear();
-            input.putAll(output);
-            output.clear();
-            output = null;
-        } else {
-            throw new IndexOutOfBoundsException("index " + index + " invalid");
         }
+        return output;
     }
+    /**
+     * Removes an entry from a LinkedHashMap
+     * .remove() didn't seem to be working for LinkedHashMaps... it didn't throw an error, but it also didn't... do... anything.
+     */
 }
 

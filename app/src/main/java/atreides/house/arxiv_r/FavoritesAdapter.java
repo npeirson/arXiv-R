@@ -22,7 +22,7 @@ public class FavoritesAdapter extends BaseAdapter {
         mData = new ArrayList();
         LinkedHashMap<String,String> map = new LinkedHashMap<>();
         // oh look, it's the categories
-        map.put("Custom Favorite...","ursssu");
+        map.put("Custom Favorite...","url");
         map.put("Astrophysics","url");
         map.put("Computer Science","urk");
         map.put("Condensed Matter","urj");

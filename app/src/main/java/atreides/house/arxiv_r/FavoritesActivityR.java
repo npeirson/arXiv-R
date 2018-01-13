@@ -4,13 +4,10 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import java.io.File;
@@ -20,15 +17,14 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 
 import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 
-
-public class FavoritesActivityR extends AppCompatActivity implements FavoritesInterfaces.OnStartDragListener {
+public class FavoritesActivityR extends AppCompatActivity implements FavoritesInterfaces.OnStartDragListener, FavoritesAddFrag.onFavoriteSelectedListener {
 
     File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
     public FloatingActionButton fabFav;
     private ItemTouchHelper mItemTouchHelper;
     public boolean focused = true;
+    public FavoritesListAdapter adapter = new FavoritesListAdapter(this, this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +58,6 @@ public class FavoritesActivityR extends AppCompatActivity implements FavoritesIn
                 e.printStackTrace();
             }
         }
-        FavoritesListAdapter adapter = new FavoritesListAdapter(this, this);
         RecyclerView recyclerView = findViewById(R.id.recyclerDerp);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -84,12 +79,17 @@ public class FavoritesActivityR extends AppCompatActivity implements FavoritesIn
         setTitle("Favorites");
     }
 
+    /**
+     * I don't remember what this does
+     * so much for good documentation...
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (focused == false) {
                     getFragmentManager().popBackStack();
+                    adapter.notifyDataSetChanged();
                     focused = true;
             } else {
                     this.finish();
@@ -98,5 +98,13 @@ public class FavoritesActivityR extends AppCompatActivity implements FavoritesIn
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Sends the newly selected favorite
+     */
+    @Override
+    public void favoriteSelected(String key, String value) {
+        adapter.oblivious(key, value);
     }
 }

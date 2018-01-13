@@ -2,6 +2,7 @@ package atreides.house.arxiv_r;
 
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import java.io.File;
@@ -27,7 +28,7 @@ public class FavoritesInterfaces {
         void onStartDrag(RecyclerView.ViewHolder viewHolder);
     }
 
-    public static LinkedHashMap<String, String> getFavorites() {
+    static LinkedHashMap<String, String> getFavorites() {
         LinkedHashMap<String,String> favorites = new LinkedHashMap<>();
         File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
         try {
@@ -36,19 +37,9 @@ public class FavoritesInterfaces {
             favorites = (LinkedHashMap<String,String>) ois.readObject();
             ois.close();
             fis.close();
-            // notify dataset changed
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return favorites;
-    }
-
-    public static class undoListener implements View.OnClickListener{
-
-        @Override
-        public void onClick(View v) {
-
-            // Code to undo the user's last action
-        }
     }
 }

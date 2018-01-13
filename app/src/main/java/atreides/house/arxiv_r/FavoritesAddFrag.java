@@ -1,6 +1,7 @@
 package atreides.house.arxiv_r;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -14,10 +15,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 
 import static android.view.View.VISIBLE;
@@ -52,6 +51,7 @@ public class FavoritesAddFrag extends Fragment {
 
                 File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
                 try {
+                    // check if already in favs
                     FileInputStream fis = new FileInputStream(favFile);
                     ObjectInputStream ois = new ObjectInputStream(fis);
                     LinkedHashMap<String,String> cFavs = (LinkedHashMap<String,String>) ois.readObject();
@@ -61,13 +61,7 @@ public class FavoritesAddFrag extends Fragment {
                         Toast.makeText(view.getContext(), key + " already in favorites!", Toast.LENGTH_SHORT).show();
                     } else {
                         // add selected to favorites
-                        cFavs.put(key,value);
-                        FileOutputStream fos = new FileOutputStream(favFile);
-                        ObjectOutputStream oos = new ObjectOutputStream(fos);
-                        oos.writeObject(cFavs);
-                        oos.close();
-                        fos.close();
-                        // now destroy fragment
+                        selectedListener.favoriteSelected(key, value);
                         getFragmentManager().popBackStack();
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -90,5 +84,20 @@ public class FavoritesAddFrag extends Fragment {
         FloatingActionButton fabFav = getActivity().findViewById(R.id.fabFavorites);
         fabFav.setVisibility(VISIBLE);
         getActivity().setTitle("Favorites");
+    }
+    public interface onFavoriteSelectedListener {
+        void favoriteSelected(String key, String value);
+    }
+    onFavoriteSelectedListener selectedListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d("do I even exist?","sometimes I'm not sure");
+        try {
+            selectedListener = (onFavoriteSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement some shit that you didn't implement.\njesus, you call yourself a programmer?\nrookie");
+        }
     }
 }

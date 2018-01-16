@@ -22,20 +22,21 @@ public class FavoritesAdapter extends BaseAdapter {
         mData = new ArrayList();
         LinkedHashMap<String,String> map = new LinkedHashMap<>();
         // oh look, it's the categories
-        map.put("Custom Favorite...","url");
-        map.put("Astrophysics","url");
-        map.put("Computer Science","urk");
-        map.put("Condensed Matter","urj");
-        map.put("General Physics","urh");
-        map.put("General Relativity","urg");
-        map.put("High Energy Physics","urf");
-        map.put("Mathematical Physics","urd");
-        map.put("Mathematics","urs");
-        map.put("Nonlinear Science","ura");
-        map.put("Nuclear Theory","urp");
-        map.put("Quantitative Biology","uro");
-        map.put("Quantum Physics","rui");
-        map.put("Statistics","uri");
+        // also, this is how it's done: http://export.arxiv.org/api/query?search_query=cat:astro-ph+cat:cs*&sortBy=lastUpdatedDate&sortOrder=ascending
+        map.put("Custom Favorite...","custom");
+        map.put("Astrophysics","cat:astro-ph");
+        map.put("Computer Science","cat:cs*");
+        map.put("Condensed Matter","cat:cond-mat*");
+        map.put("General Physics","cat:physics-gen.ph");
+        map.put("General Relativity","cat:gr-qc");
+        map.put("High Energy Physics","cat:hep*");
+        map.put("Mathematical Physics","cat:math-ph");
+        map.put("Mathematics","cat:math*");
+        map.put("Nonlinear Science","cat:nlin*");
+        map.put("Nuclear Theory","cat:nucl-th");
+        map.put("Quantitative Biology","cat:q-bio*");
+        map.put("Quantum Physics","cat:quant-ph");
+        map.put("Statistics","cat:stat*");
         mData.addAll(map.entrySet());
     }
 

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -48,7 +49,6 @@ public class FetchFeedTask extends AppCompatActivity {
     public String baseUrl = "https://export.arxiv.org/api/query?";
     public String mFeedAuthor;
     public Boolean preD = false;
-    public Boolean add = false;
     public Boolean love = false;
     public Boolean bmks = false;
     public Boolean stackMe = false;
@@ -64,6 +64,7 @@ public class FetchFeedTask extends AppCompatActivity {
         // could add old data concatenation for increased efficiency
         fragMan = frag;
         context = ctx;
+        // remember to set "send message" to true
     }
 
     public FetchFeedTask(String fp, boolean dc, Context ctx, FragmentManager frag){
@@ -108,42 +109,78 @@ public class FetchFeedTask extends AppCompatActivity {
         File bmFile = new File(ctx.getFilesDir().getAbsolutePath() + "/bookmarks");
         if (oldBmks == null || !oldBmks.exists()) {
             // pop the cherry
-            syncBookmarks(bmFile, oldBmks);
+            syncRegisteries(bmFile, oldBmks);
             new FetchFeedAsync().execute(targetUrlList.toArray(new String[targetUrlList.size()]));
         } else {
             // if !virgin
             if (FileUtils.contentEquals(oldBmks, bmFile)) {
                 // bookmarks haven't changed
-                ArrayList<RssFeedModel> cachedData;
                 FileInputStream fis;
                 try {
                     fis = ctx.openFileInput("bookmarksFile");
-                    ObjectInputStream oi = new ObjectInputStream(fis);
-                    cachedData = (ArrayList<RssFeedModel>) oi.readObject();
-                    oi.close();
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    mFeedModelList = (ArrayList<RssFeedModel>) ois.readObject();
+                    ois.close();
                     fis.close();
-                    mFeedModelList = cachedData;
                 } catch (IOException e) {
                     Log.e("InternalStorage", e.getMessage());
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-                sendMessenger();
+                sendMessenger(false);
             } else {
                 // bookmarks have changed
-                syncBookmarks(bmFile, oldBmks);
+                syncRegisteries(bmFile, oldBmks);
                 new FetchFeedAsync().execute(targetUrlList.toArray(new String[targetUrlList.size()]));
             }
         }
     }
 
-    private void syncBookmarks(File bmFile, File oldBmks) throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(bmFile);
+    // for favorites
+    public FetchFeedTask(String targetUrl, Context ctx, FragmentManager frag, boolean favorites) throws IOException, ClassNotFoundException {
+        fragMan = frag;
+        File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
+        File favFileFetched = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favoritesFetched");
+        File favFileCached = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favoritesCache");
+        Log.d("url",targetUrl);
+        if (favFile == null || !favFile.exists()) {
+            // make the file, then go get the goods
+            //syncRegisteries(favFile,favFileFetched);
+            new FetchFeedAsync().execute(targetUrl);
+        } else {
+            // check last updated
+            SimpleDateFormat df = new SimpleDateFormat("MMdd");
+            Date todayDate = new Date();
+            Date lastModDate = new Date(favFileCached.lastModified());
+            String today = df.format(todayDate);
+            String lastMod = df.format(lastModDate);
+            try {
+                if (Integer.parseInt(today) != Integer.parseInt(lastMod) || !FileUtils.contentEquals(favFile, favFileFetched)) {
+                    // outdated or list changed, get new
+                    //syncRegisteries(favFile,favFileFetched);
+                    new FetchFeedAsync().execute(targetUrl);
+                } else {
+                    // current, send cached
+                    FileInputStream fis = new FileInputStream(favFileCached);
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    mFeedModelList = (ArrayList<RssFeedModel>) ois.readObject();
+                    ois.close();
+                    fis.close();
+                    sendMessenger(false);
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void syncRegisteries(File newFile, File oldFile) throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(newFile);
         ObjectInputStream ois = new ObjectInputStream(fis);
         ArrayList<String> cbkmx = (ArrayList<String>) ois.readObject();
         ois.close();
         fis.close();
-        FileOutputStream fos = new FileOutputStream(oldBmks);
+        FileOutputStream fos = new FileOutputStream(oldFile);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(cbkmx);
         oos.close();
@@ -167,29 +204,23 @@ public class FetchFeedTask extends AppCompatActivity {
 
             if (Integer.parseInt(today) != Integer.parseInt(lastMod)) {
                 // outdated, get new
-                Log.d("redundancy checker","outdated, fetching new data");
                 new FetchFeedAsync().execute(baseUrl + "search_query=cat:" + fp + "*&max_results=10");
-
             } else {
                 // current, send cached
-                Log.d("redundancy checker","current");
-
-                ArrayList<RssFeedModel> cachedData;
                 FileInputStream fis;
                 try {
                     fis = context.openFileInput(fp + "File");
                     ObjectInputStream oi = new ObjectInputStream(fis);
-                    cachedData = (ArrayList<RssFeedModel>) oi.readObject();
+                    mFeedModelList = (ArrayList<RssFeedModel>) oi.readObject();
                     oi.close();
                     fis.close();
-                    mFeedModelList = cachedData;
                 } catch (IOException e) {
                     Log.e("InternalStorage", e.getMessage());
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
                 Log.d("redundancy checker","sending old info");
-                sendMessenger();
+                sendMessenger(false);
             }
         }
     }
@@ -381,9 +412,9 @@ public class FetchFeedTask extends AppCompatActivity {
                 if (success) {
                     if (preD == true || bmks == true) {
                         saveData();
-                        sendMessenger();
+                        sendMessenger(false);
                     } else {
-                        sendMessenger();
+                        sendMessenger(false);
                     }
                 } else {
                     // idk, it failed, what else do you want? Deal with it.
@@ -414,20 +445,21 @@ public class FetchFeedTask extends AppCompatActivity {
     }
 
     // bundle and send data to fragment
-    private void sendMessenger() {
+    private void sendMessenger(Boolean add) {
         if (add == true) {
             // just adding new info, dawg
+            // use for "more articles" calls
             Log.d("sendmessenger", String.valueOf(add));
         } else {
             // make an entire fragment
-            Log.d("sendmessenger","else");
-            //FragmentManager fragmentManager = getFragmentManager();
             FirstFragment newFragment = new FirstFragment();
             ParcelableArrayList pal = new ParcelableArrayList();
             pal.setThing(mFeedModelList);
             Bundle bundle = new Bundle();
             bundle.putParcelable("articles", pal);
-            loadingBlip.dismiss();
+            if (loadingBlip != null) {
+                loadingBlip.dismiss();
+            }
             if (bundle != null) {
                 newFragment.setArguments(bundle);
                 if ( stackMe == true ) {

@@ -50,25 +50,33 @@ public class FavoritesAddFrag extends Fragment {
                 String key = adapter.getItem(pos).getKey();
 
                 File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
-                try {
-                    // check if already in favs
-                    FileInputStream fis = new FileInputStream(favFile);
-                    ObjectInputStream ois = new ObjectInputStream(fis);
-                    LinkedHashMap<String,String> cFavs = (LinkedHashMap<String,String>) ois.readObject();
-                    ois.close();
-                    fis.close();
-                    if (cFavs.get(key) != null) {
-                        Toast.makeText(view.getContext(), key + " already in favorites!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // add selected to favorites
-                        selectedListener.favoriteSelected(key, value);
-                        getFragmentManager().popBackStack();
+
+                // check if it's a custom fav or pre-defined fav
+                if (pos == 0) {
+                // open custom favorite dialog for result
+                    Log.d("Favorites","Custom favorite selected");
+                } else {
+                    try {
+                        // check if already in favs
+                        FileInputStream fis = new FileInputStream(favFile);
+                        ObjectInputStream ois = new ObjectInputStream(fis);
+                        LinkedHashMap<String, String> cFavs = (LinkedHashMap<String, String>) ois.readObject();
+                        ois.close();
+                        fis.close();
+                        if (cFavs.get(key) != null) {
+                            Toast.makeText(view.getContext(), key + " already in favorites!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // add selected to favorites
+                            selectedListener.favoriteSelected(key, value);
+                            getFragmentManager().popBackStack();
+                        }
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
                 }
             }
         });
+
         return myView;
     }
 
@@ -93,7 +101,6 @@ public class FavoritesAddFrag extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d("do I even exist?","sometimes I'm not sure");
         try {
             selectedListener = (onFavoriteSelectedListener) context;
         } catch (ClassCastException e) {

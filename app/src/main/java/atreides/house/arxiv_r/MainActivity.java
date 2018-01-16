@@ -25,11 +25,13 @@ import android.view.MenuItem;
 import android.view.Window;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -52,7 +54,9 @@ public class MainActivity extends AppCompatActivity
 
         ActivityCompat.requestPermissions(this,PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
 
-        // create bookmarks file if non exists
+        /**
+         * create bookmarks file if non exists
+         */
         File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
         if (bmFile == null || !bmFile.exists()) {
             new File("bookmarks");
@@ -71,6 +75,47 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+        /**
+         * Load favorites
+         */
+        File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
+        // this is how it's done: https://export.arxiv.org/api/query?search_query=cat:astro-ph+cat:cs*&sortBy=lastUpdatedDate&sortOrder=ascending
+        if (!favFile.exists()) {
+            Log.d("MainActivity","No favorites file to load!");
+        } else {
+            // fetch favorites
+            LinkedHashMap<String, String> cFavs = null;
+            try {
+                FileInputStream fis = new FileInputStream(favFile);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                cFavs = (LinkedHashMap<String, String>) ois.readObject();
+                ois.close();
+                fis.close();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (cFavs != null) {
+                Log.d("MainActivity","cFavs returned null!");
+                if (cFavs.isEmpty()) {
+                    Log.d("MainActivity","No favorites in file!");
+                } else {
+                    // construct url
+                    String url = "https://export.arxiv.org/api/query?search_query=" +
+                            String.valueOf(cFavs.values()).replace(", ", "+").replace("[","").replace("]","")
+                            + "&sortBy=lastUpdatedDate&sortOrder=ascending";
+                    // fetch articles
+                    try {
+                        new FetchFeedTask(url,this,getFragmentManager(),true);
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        /**
+         * Floating Search Button
+         */
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +145,9 @@ public class MainActivity extends AppCompatActivity
                  */
         });
 
+        /**
+         * Drawer menu
+         */
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

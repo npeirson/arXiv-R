@@ -35,9 +35,7 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ParcelableArrayList pal = getArguments().getParcelable("articles");
-
         List<RssFeedModel> mFeedModelList = pal.getThing();
-
         myView = inflater.inflate(R.layout.first_layout, container, false);
         RecyclerView mRecyclerView = myView.findViewById(R.id.recyclerView);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());

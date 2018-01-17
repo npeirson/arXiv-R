@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity
 
         ActivityCompat.requestPermissions(this,PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
 
-        /**
-         * create bookmarks file if non exists
+        /*
+          create bookmarks file if non exists
          */
         File bmFile = getApplicationContext().getFileStreamPath("bookmarks");
         if (bmFile == null || !bmFile.exists()) {
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        /**
+        /*
          * Load favorites
          */
         File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
@@ -101,7 +101,10 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     // construct url
                     String url = "https://export.arxiv.org/api/query?search_query=" +
-                            String.valueOf(cFavs.values()).replace(", ", "+").replace("[","").replace("]","")
+                            String.valueOf(cFavs.values())
+                                    .replace(", ", "+")
+                                    .replace("[","")
+                                    .replace("]","")
                             + "&sortBy=lastUpdatedDate&sortOrder=ascending";
                     // fetch articles
                     try {
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        /**
+        /*
          * Floating Search Button
          */
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -128,24 +131,9 @@ public class MainActivity extends AppCompatActivity
                         .addToBackStack(null)
                         .commit();
             }
-                /*
-
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-
-                Dialog generalDialog = new Dialog(MainActivity.this);
-                generalDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                generalDialog.setContentView(R.layout.search_layout);
-                generalDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                generalDialog.show();
-
-                //category = "cs";
-                //new FetchFeedTask().execute((Void) null);
-            }
-                 */
         });
 
-        /**
+        /*
          * Drawer menu
          */
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -259,7 +247,3 @@ public class MainActivity extends AppCompatActivity
 
     }
 }
-
-
-
-

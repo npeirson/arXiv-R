@@ -142,8 +142,7 @@ public class FetchFeedTask extends AppCompatActivity {
         File favFile = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favorites");
         File favFileFetched = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favoritesFetched");
         File favFileCached = new File(Environment.getDataDirectory() + "/data/atreides.house.arxiv_r/files/favoritesCache");
-        Log.d("url",targetUrl);
-        if (favFile == null || !favFile.exists()) {
+        if (!favFile.exists()) {
             // make the file, then go get the goods
             //syncRegisteries(favFile,favFileFetched);
             new FetchFeedAsync().execute(targetUrl);

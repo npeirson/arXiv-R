@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
+    android:padding="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/cardPadding"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/textview_big_0_size"
+        android:textStyle="bold"
+        android:textAlignment="viewStart"
+        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TextView
+        android:id="@+id/textViewAuthors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/cardPadding"
+        android:textSize="@dimen/textview_middle_size"
+        android:textStyle="bold"
+        android:layout_below="@id/textViewTitle" />
+
+    <TextView
+        android:id="@+id/textViewPublished"
+        android:layout_width="@dimen/cardTextHalfWidth"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewAuthors"
+        android:gravity="start"
+        android:padding="@dimen/cardPadding"
+        android:textSize="@dimen/textview_small_size" />
+
+    <TextView
+        android:id="@+id/textViewUpdated"
+        android:layout_width="@dimen/cardTextHalfWidth"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewAuthors"
+        android:layout_toEndOf="@id/textViewPublished"
+        android:padding="@dimen/cardPadding"
+        android:textSize="@dimen/textview_small_size" />
+
+    <TextView
+        android:id="@+id/textViewSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/cardPadding"
+        android:textSize="@dimen/textview_small_size"
+        android:justificationMode="inter_word"
+        android:layout_below="@id/textViewPublished"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:id="@+id/buttonBookmark"
+        android:background="@drawable/button_clean_left"
+        android:layout_width="@dimen/cardButtonsWidth"
+        android:layout_height="@dimen/cardButtonHeight"
+        android:layout_below="@id/textViewSummary"
+        android:layout_gravity="start"
+        android:layout_marginEnd="2dp"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:padding="@dimen/standardPadding"
+        android:gravity="center"
+        android:textSize="@dimen/textview_middle_plus_size"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:text="@string/bookmark"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/buttonBookmarked"
+        android:background="@drawable/button_marked_left"
+        android:layout_width="@dimen/cardButtonsWidth"
+        android:layout_height="@dimen/cardButtonHeight"
+        android:layout_below="@id/textViewSummary"
+        android:layout_gravity="start"
+        android:layout_marginEnd="2dp"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:padding="@dimen/standardPadding"
+        android:gravity="center"
+        android:textSize="@dimen/textview_middle_plus_size"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:text="@string/bookmarked"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/buttonShare"
+        android:background="@drawable/button_clean"
+        android:layout_width="@dimen/cardButtonsWidth"
+        android:layout_height="@dimen/cardButtonHeight"
+        android:layout_below="@id/textViewSummary"
+        android:layout_toEndOf="@id/buttonBookmark"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:padding="@dimen/standardPadding"
+        android:gravity="center"
+        android:textSize="@dimen/textview_middle_plus_size"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:text="@string/share"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/buttonDownload"
+        android:background="@drawable/button_clean_right"
+        android:layout_width="@dimen/cardButtonsWidth"
+        android:layout_height="@dimen/cardButtonHeight"
+        android:layout_below="@id/textViewSummary"
+        android:layout_toEndOf="@+id/buttonShare"
+        android:layout_alignEnd="@id/textViewUpdated"
+        android:layout_gravity="end"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:padding="@dimen/standardPadding"
+        android:gravity="center"
+        android:textSize="@dimen/textview_middle_plus_size"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:text="@string/download"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/buttonDownloading"
+        android:background="@drawable/button_clean_right"
+        android:layout_width="@dimen/cardButtonsWidth"
+        android:layout_height="@dimen/cardButtonHeight"
+        android:layout_below="@id/textViewSummary"
+        android:layout_toEndOf="@+id/buttonShare"
+        android:layout_alignEnd="@id/textViewUpdated"
+        android:layout_gravity="end"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:padding="@dimen/standardPadding"
+        android:gravity="center"
+        android:textSize="@dimen/textview_middle_plus_size"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:text="@string/downloading"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/buttonRead"
+        android:background="@drawable/button_clean_right"
+        android:layout_width="@dimen/cardButtonsWidth"
+        android:layout_height="@dimen/cardButtonHeight"
+        android:layout_below="@id/textViewSummary"
+        android:layout_toEndOf="@+id/buttonShare"
+        android:layout_alignEnd="@id/textViewUpdated"
+        android:layout_gravity="end"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="@dimen/standardPadding"
+        android:padding="@dimen/standardPadding"
+        android:gravity="center"
+        android:textSize="@dimen/textview_middle_plus_size"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:text="@string/open"
+        android:visibility="gone"/>
+
+</RelativeLayout>

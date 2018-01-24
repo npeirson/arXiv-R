@@ -3,24 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
-    <TextView
-        android:id="@+id/theWidget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/doublePadding"
-        android:background="@color/colorPrimary"
-        android:contentDescription="what even am I"
-        android:gravity="center"
-        android:text="who is this talking to me though"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold|italic"/>
 
     <ListView
         android:id="@+id/widgetListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
     </ListView>
 
 </LinearLayout>

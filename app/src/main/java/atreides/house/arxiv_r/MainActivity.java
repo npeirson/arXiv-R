@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity
             setTitle("Mathematics");
             new FetchFeedTask(category,true,this,getFragmentManager());
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_bookmarks) {
             try {
                 new bewkmarx();
             } catch (IOException e) {

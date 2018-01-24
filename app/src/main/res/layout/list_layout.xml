@@ -18,7 +18,7 @@
 
             <TextView
                 android:id="@+id/textViewTitle"
-                android:layout_width="@dimen/cardTextWidth"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/cardPadding"
                 android:layout_alignParentTop="true"
@@ -31,7 +31,7 @@
 
             <TextView
                 android:id="@+id/textViewAuthors"
-                android:layout_width="@dimen/cardTextWidth"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/cardPadding"
                 android:textSize="@dimen/textview_middle_size"
@@ -40,7 +40,7 @@
 
             <TextView
                 android:id="@+id/textViewPublished"
-                android:layout_width="@dimen/cardTextHalfWidth"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textViewAuthors"
                 android:gravity="start"
@@ -49,16 +49,17 @@
 
             <TextView
                 android:id="@+id/textViewUpdated"
-                android:layout_width="@dimen/cardTextHalfWidth"
                 android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:layout_below="@id/textViewAuthors"
-                android:layout_toEndOf="@id/textViewPublished"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/standardPadding"
                 android:padding="@dimen/cardPadding"
                 android:textSize="@dimen/textview_small_size" />
 
             <TextView
                 android:id="@+id/textViewSummary"
-                android:layout_width="@dimen/cardTextWidth"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/cardPadding"
                 android:textSize="@dimen/textview_small_size"
@@ -125,7 +126,6 @@
                 android:layout_height="@dimen/cardButtonHeight"
                 android:layout_below="@id/textViewSummary"
                 android:layout_toEndOf="@+id/buttonShare"
-                android:layout_alignEnd="@id/textViewUpdated"
                 android:layout_gravity="end"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="@dimen/standardPadding"
@@ -144,7 +144,6 @@
                 android:layout_height="@dimen/cardButtonHeight"
                 android:layout_below="@id/textViewSummary"
                 android:layout_toEndOf="@+id/buttonShare"
-                android:layout_alignEnd="@id/textViewUpdated"
                 android:layout_gravity="end"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="@dimen/standardPadding"
@@ -163,7 +162,6 @@
                 android:layout_height="@dimen/cardButtonHeight"
                 android:layout_below="@id/textViewSummary"
                 android:layout_toEndOf="@+id/buttonShare"
-                android:layout_alignEnd="@id/textViewUpdated"
                 android:layout_gravity="end"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="@dimen/standardPadding"

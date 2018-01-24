@@ -184,8 +184,8 @@ public class RssFeedListAdapter
                                 Log.d("ummmm", "well " + dl.getStatus());
                                 XrssFeedView = itemView;
                                 if (dl.getStatus() == AsyncTask.Status.RUNNING) {
-                                    itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.GONE);
                                     itemView.findViewById(R.id.buttonDownloading).setVisibility(itemView.VISIBLE);
+                                    itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.GONE);
                                 }
                             }
                         });
@@ -195,9 +195,9 @@ public class RssFeedListAdapter
                         itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonShare).setVisibility(itemView.GONE);
-                        itemView.findViewById(R.id.buttonRead).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonDownloading).setVisibility(itemView.GONE);
+                        itemView.findViewById(R.id.buttonRead).setVisibility(itemView.GONE);
                     }
                 }
             });
@@ -273,8 +273,8 @@ public class RssFeedListAdapter
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             // sometimes you just have to spank it
-            XrssFeedView.findViewById(R.id.buttonDownloading).setVisibility(XrssFeedView.GONE);
             XrssFeedView.findViewById(R.id.buttonRead).setVisibility(XrssFeedView.VISIBLE);
+            XrssFeedView.findViewById(R.id.buttonDownloading).setVisibility(XrssFeedView.GONE);
         }
     }
 }

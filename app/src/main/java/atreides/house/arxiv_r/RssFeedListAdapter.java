@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +68,6 @@ public class RssFeedListAdapter
 
                         // workaround for dynamic button text
                         File docfile = new File((Environment.getExternalStorageDirectory() + "/arXiv/" + trimmed.replace("/","") + ".pdf"));
-                        Log.d("download", " ------ >>>>>" + docfile.exists());
                         if (docfile.exists()) {
                             itemView.findViewById(R.id.buttonRead).setVisibility(itemView.VISIBLE);
                         } else {
@@ -178,10 +176,8 @@ public class RssFeedListAdapter
                         itemView.findViewById(R.id.buttonDownload).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Log.d("download", "about to download");
                                 AsyncTask<String, Void, Void> dl = new DownloadFile();
                                 dl.execute("https://arxiv.org/pdf/" + trimmed + ".pdf", trimmed.replace("/","") + ".pdf");
-                                Log.d("ummmm", "well " + dl.getStatus());
                                 XrssFeedView = itemView;
                                 if (dl.getStatus() == AsyncTask.Status.RUNNING) {
                                     itemView.findViewById(R.id.buttonDownloading).setVisibility(itemView.VISIBLE);
@@ -254,12 +250,9 @@ public class RssFeedListAdapter
             String fileName = strings[1];
             String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
             File folder = new File(extStorageDirectory, "arXiv");
-            Log.d("DF","Gonna make dir");
             folder.mkdir();
-            Log.d("DF","made dir");
             File pdfFile = new File(folder, fileName);
             try{
-                Log.d("DF","Gonna make file");
                 pdfFile.createNewFile();
             }catch (IOException e){
                 e.printStackTrace();

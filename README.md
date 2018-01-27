@@ -9,13 +9,11 @@ It's far from done, I assure you.
 Also, this is my first project in Java, so code tips and suggestions are very welcome.
 
 #### Currently working on:
-- Favorites
+- "More articles" card
 
 #### Remaining tasks:
-- "More articles" card
 - Make the actual widget, yo. You know, the whole reason you started this timesink in the first place.
 - Expand to all fields and categories (remember pdf thing)
-- Icon
 - Auto-update
 
 #### Done
@@ -25,8 +23,8 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 - Check last update
 - Sharing
 - Make articles accessible
-- Store and ope PDFs
-- Settings activityn. This should be an activity.
+- Store and open PDFs
+- Settings activity. This should be an activity.
 - Finish designing custom search dialog
 - Bookmarks
 - Sort your backstacks out, yo.
@@ -35,6 +33,7 @@ Also, this is my first project in Java, so code tips and suggestions are very we
 - Search functionality
 - URL standardization
 - Favorites
+- Icon ... it's done, just need to implement it
 
 #### Maybe if I have time later...
 - Add sub-section filtering

@@ -34,7 +34,7 @@
     <!-- Card elements (not shit) -->
     <dimen name="cardTextHalfWidth">190dp</dimen> <!-- see this? this is rookie shit. This is garbage. This is literal shit that new programmers do because they have no concept of varying dimensions. This is useless. delete it. or comment on it. about how shitty it is. -->
     <dimen name="cardPadding">@dimen/standardPadding</dimen>
-    <dimen name="cardButtonsWidth">123dp</dimen>
+    <dimen name="cardButtonsWidth">0dp</dimen> <!-- was 123dp -->
     <dimen name="cardButtonFillet">10dp</dimen>
     <dimen name="cardButtonHeight">40dp</dimen>
 

@@ -2,14 +2,17 @@ package atreides.house.arxiv_r;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.File;
@@ -65,13 +68,14 @@ public class RssFeedListAdapter
                         itemView.findViewById(R.id.textViewSummary).setVisibility(itemView.VISIBLE);
                         itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.VISIBLE);
                         itemView.findViewById(R.id.buttonShare).setVisibility(itemView.VISIBLE);
+                        itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.VISIBLE);
 
                         // workaround for dynamic button text
                         File docfile = new File((Environment.getExternalStorageDirectory() + "/arXiv/" + trimmed.replace("/","") + ".pdf"));
                         if (docfile.exists()) {
-                            itemView.findViewById(R.id.buttonRead).setVisibility(itemView.VISIBLE);
+                            ((Button)itemView.findViewById(R.id.buttonDownload)).setText("read it");
                         } else {
-                            itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.VISIBLE);
+                            ((Button)itemView.findViewById(R.id.buttonDownload)).setText("download");
                         }
 
                         FileInputStream fis;
@@ -82,9 +86,11 @@ public class RssFeedListAdapter
                             bkmx = (ArrayList<String>) ois.readObject();
                             if (bkmx.contains(trimmed)){
                                 // change to bookmarked state
-                                itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.VISIBLE);
+                                (itemView.findViewById(R.id.buttonBookmark)).setBackground(itemView.getResources().getDrawable(R.drawable.button_marked_left));
+                                ((Button)itemView.findViewById(R.id.buttonBookmark)).setText("bookmarked");
                             } else {
-                                itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.VISIBLE);
+                                (itemView.findViewById(R.id.buttonBookmark)).setBackground(itemView.getResources().getDrawable(R.drawable.button_clean_left));
+                                ((Button)itemView.findViewById(R.id.buttonBookmark)).setText("bookmark");
                             }
                             ois.close();
                             fis.close();
@@ -102,41 +108,23 @@ public class RssFeedListAdapter
                                     bkmx = (ArrayList<String>) ois.readObject();
                                     ois.close();
                                     fis.close();
-                                    bkmx.add(trimmed);
+                                    if (((Button) itemView.findViewById(R.id.buttonBookmark)).getText().toString() != "bookmarked") {
+                                        (itemView.findViewById(R.id.buttonBookmark)).setBackground(itemView.getResources().getDrawable(R.drawable.button_marked_left));
+                                        ((Button)itemView.findViewById(R.id.buttonBookmark)).setText("bookmarked");
+                                        bkmx.add(trimmed);
+                                    } else {
+                                        (itemView.findViewById(R.id.buttonBookmark)).setBackground(itemView.getResources().getDrawable(R.drawable.button_clean_left));
+                                        ((Button)itemView.findViewById(R.id.buttonBookmark)).setText("bookmark");
+                                        bkmx.remove(trimmed);
+                                    }
                                     FileOutputStream fos = new FileOutputStream(bmFile);
                                     ObjectOutputStream oos = new ObjectOutputStream(fos);
                                     oos.writeObject(bkmx);
                                     oos.close();
                                     fos.close();
                                 } catch (Exception e) {
+                                    Toast.makeText(view.getContext(), "Error reading bookmarks file.", Toast.LENGTH_SHORT).show();
                                     e.printStackTrace();
-                                } finally {
-                                    itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.VISIBLE);
-                                    itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.INVISIBLE);
-                                }
-                            }
-                        });
-
-                        itemView.findViewById(R.id.buttonBookmarked).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                try {
-                                    FileInputStream fis = new FileInputStream(bmFile);
-                                    ObjectInputStream ois = new ObjectInputStream(fis);
-                                    bkmx = (ArrayList<String>) ois.readObject();
-                                    ois.close();
-                                    fis.close();
-                                    bkmx.remove(trimmed);
-                                    FileOutputStream fos = new FileOutputStream(bmFile);
-                                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-                                    oos.writeObject(bkmx);
-                                    oos.close();
-                                    fos.close();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.VISIBLE);
-                                    itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.GONE);
                                 }
                             }
                         });
@@ -153,35 +141,32 @@ public class RssFeedListAdapter
                             }
                         });
 
-                        // read button press
-                        itemView.findViewById(R.id.buttonRead).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                File pdfFile = new File(Environment.getExternalStorageDirectory() + "/arXiv/" + trimmed.replace("/","") + ".pdf");
-                                Uri sharedFileUri = FileProvider.getUriForFile(view.getContext(), "atreides.house.arxiv_r.fileProvider", pdfFile);
-                                Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
-                                pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                pdfIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                                pdfIntent.setDataAndType(sharedFileUri, "application/pdf");
-
-                                try{
-                                    view.getContext().startActivity(pdfIntent);
-                                }catch(ActivityNotFoundException e){
-                                    Toast.makeText(view.getContext(), "No PDF application found.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-
                         // download button press
                         itemView.findViewById(R.id.buttonDownload).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                AsyncTask<String, Void, Void> dl = new DownloadFile();
-                                dl.execute("https://arxiv.org/pdf/" + trimmed + ".pdf", trimmed.replace("/","") + ".pdf");
-                                XrssFeedView = itemView;
-                                if (dl.getStatus() == AsyncTask.Status.RUNNING) {
-                                    itemView.findViewById(R.id.buttonDownloading).setVisibility(itemView.VISIBLE);
-                                    itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.GONE);
+                                if (((Button) itemView.findViewById(R.id.buttonDownload)).getText().toString() == "download") {
+                                    AsyncTask<String, Void, Void> dl = new DownloadFile();
+                                    dl.execute("https://arxiv.org/pdf/" + trimmed + ".pdf", trimmed.replace("/", "") + ".pdf");
+                                    XrssFeedView = itemView;
+                                    if (dl.getStatus() == AsyncTask.Status.RUNNING) {
+                                        ((Button) itemView.findViewById(R.id.buttonDownload)).setText("downloading");
+                                    }
+                                } else if (((Button) itemView.findViewById(R.id.buttonDownload)).getText() != "read it") {
+                                    File pdfFile = new File(Environment.getExternalStorageDirectory() + "/arXiv/" + trimmed.replace("/","") + ".pdf");
+                                    Uri sharedFileUri = FileProvider.getUriForFile(view.getContext(), "atreides.house.arxiv_r.fileProvider", pdfFile);
+                                    Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+                                    pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    pdfIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                    pdfIntent.setDataAndType(sharedFileUri, "application/pdf");
+
+                                    try{
+                                        view.getContext().startActivity(pdfIntent);
+                                    }catch(ActivityNotFoundException e){
+                                        Toast.makeText(view.getContext(), "No PDF application found.", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(view.getContext(), "Please wait...", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -189,11 +174,8 @@ public class RssFeedListAdapter
                         // collapse view
                         itemView.findViewById(R.id.textViewSummary).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonBookmark).setVisibility(itemView.GONE);
-                        itemView.findViewById(R.id.buttonBookmarked).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonShare).setVisibility(itemView.GONE);
                         itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.GONE);
-                        itemView.findViewById(R.id.buttonDownloading).setVisibility(itemView.GONE);
-                        itemView.findViewById(R.id.buttonRead).setVisibility(itemView.GONE);
                     }
                 }
             });
@@ -266,8 +248,7 @@ public class RssFeedListAdapter
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             // sometimes you just have to spank it
-            XrssFeedView.findViewById(R.id.buttonRead).setVisibility(XrssFeedView.VISIBLE);
-            XrssFeedView.findViewById(R.id.buttonDownloading).setVisibility(XrssFeedView.GONE);
+            ((Button) XrssFeedView.findViewById(R.id.buttonDownload)).setText("read it");
         }
     }
 }

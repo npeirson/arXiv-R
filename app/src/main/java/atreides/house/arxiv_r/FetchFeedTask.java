@@ -1,6 +1,7 @@
 package atreides.house.arxiv_r;
 
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -42,6 +43,7 @@ public class FetchFeedTask extends AppCompatActivity {
     // initialize stuff and things
     public Context context;
     public FragmentManager fragMan;
+    public Fragment frag;
     public List<RssFeedModel> mFeedModelList;
     public Dialog loadingBlip;
     public String mFeedTitle, mFeedSummary, mFeedPublished, mFeedUpdated, mFeedId;
@@ -50,11 +52,12 @@ public class FetchFeedTask extends AppCompatActivity {
     public String mFeedAuthor;
     public Boolean preD = false;
     public Boolean love = false;
+    public Boolean hate = false;
     public Boolean bmks = false;
     public Boolean stackMe = false;
 
     // for "more cards" calls
-    public FetchFeedTask(String fp, int pos, Context ctx, FragmentManager frag){
+    public FetchFeedTask(String fp, int pos, Context ctx, Fragment fragment){
         // blip me please, daddy
         loadingBlip = new Dialog(ctx);
         loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -62,13 +65,17 @@ public class FetchFeedTask extends AppCompatActivity {
         loadingBlip.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         loadingBlip.show();
         // could add old data concatenation for increased efficiency
-        fragMan = frag;
         context = ctx;
+        frag = fragment;
+        hate = true;
+        // helps if you make it actually do something, huh
+        new FetchFeedAsync().execute(baseUrl + fp + "&max_results=10");
         // remember to set "send message" to true
+
     }
 
+    // general caller
     public FetchFeedTask(String fp, boolean dc, Context ctx, FragmentManager frag){
-        // blip me please, daddy
         loadingBlip = new Dialog(ctx);
         loadingBlip.requestWindowFeature(Window.FEATURE_NO_TITLE);
         loadingBlip.setContentView(R.layout.loading_blip);
@@ -401,6 +408,11 @@ public class FetchFeedTask extends AppCompatActivity {
                     Toast.makeText(context,
                             "You have no bookmarks",
                             Toast.LENGTH_LONG).show();
+                } else if ( hate == true ) {
+                    loadingBlip.dismiss();
+                    Toast.makeText(context,
+                            "There are no more articles to show",
+                            Toast.LENGTH_LONG).show();
                 } else {
                     loadingBlip.dismiss();
                     Toast.makeText(context,
@@ -412,6 +424,9 @@ public class FetchFeedTask extends AppCompatActivity {
                     if (preD == true || bmks == true) {
                         saveData();
                         sendMessenger(false);
+                    } else if ( hate == true ) {
+                        Log.d("sending the","glorious truth");
+                        sendMessenger(true);
                     } else {
                         sendMessenger(false);
                     }
@@ -445,17 +460,19 @@ public class FetchFeedTask extends AppCompatActivity {
 
     // bundle and send data to fragment
     private void sendMessenger(Boolean add) {
-        if (add == true) {
+        // make an entire fragment
+        FirstFragment newFragment = new FirstFragment();
+        ParcelableArrayList pal = new ParcelableArrayList();
+        pal.setThing(mFeedModelList);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("articles", pal);
+        if (add) {
             // just adding new info, dawg
             // use for "more articles" calls
             Log.d("sendmessenger", String.valueOf(add));
+            bundle.putString("category", fpSave);
+            frag.setArguments(bundle);
         } else {
-            // make an entire fragment
-            FirstFragment newFragment = new FirstFragment();
-            ParcelableArrayList pal = new ParcelableArrayList();
-            pal.setThing(mFeedModelList);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("articles", pal);
             if (loadingBlip != null) {
                 loadingBlip.dismiss();
             }

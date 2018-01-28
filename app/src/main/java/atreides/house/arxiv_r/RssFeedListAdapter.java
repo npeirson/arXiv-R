@@ -2,13 +2,11 @@ package atreides.house.arxiv_r;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +68,7 @@ public class RssFeedListAdapter
                         itemView.findViewById(R.id.buttonShare).setVisibility(itemView.VISIBLE);
                         itemView.findViewById(R.id.buttonDownload).setVisibility(itemView.VISIBLE);
 
-                        // workaround for dynamic button text
+                        // workaround for dynamic button text... or at least, it used to be
                         File docfile = new File((Environment.getExternalStorageDirectory() + "/arXiv/" + trimmed.replace("/","") + ".pdf"));
                         if (docfile.exists()) {
                             ((Button)itemView.findViewById(R.id.buttonDownload)).setText("read it");
@@ -80,7 +78,6 @@ public class RssFeedListAdapter
 
                         FileInputStream fis;
                         try {
-                            //fos = this.openFileOutput("bookmarks", Context.MODE_PRIVATE);
                             fis = new FileInputStream(bmFile);
                             ObjectInputStream ois = new ObjectInputStream(fis);
                             bkmx = (ArrayList<String>) ois.readObject();
@@ -211,7 +208,6 @@ public class RssFeedListAdapter
             e.printStackTrace();
         }
         // this is where an "et al." modifier could be added
-        // post fields
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewTitle)).setText(rssFeedModel.title);
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewSummary)).setText(rssFeedModel.summary);
         ((TextView)holder.rssFeedView.findViewById(R.id.textViewAuthors)).setText(rssFeedModel.author);
@@ -240,14 +236,12 @@ public class RssFeedListAdapter
                 e.printStackTrace();
             }
             FileDownloader.downloadFile(fileUrl, pdfFile);
-
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            // sometimes you just have to spank it
             ((Button) XrssFeedView.findViewById(R.id.buttonDownload)).setText("read it");
         }
     }

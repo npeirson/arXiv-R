@@ -3,7 +3,10 @@
 
 **Development ceased shortly before arXiv 2.0 changed their API. Maybe I'll pick it up again once they're closer to completion.**
 
-#### but y tho?
+![Screenshot](Screenshot.png]
+
+
+#### but y make this, tho?
 The existing arXiv app doesn't have the functions I want, so I'm making this.
 
 It's far from done, I assure you.

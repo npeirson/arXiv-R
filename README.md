@@ -3,7 +3,7 @@
 
 **Development ceased shortly before arXiv 2.0 changed their API. Maybe I'll pick it up again once they're closer to completion.**
 
-![Screenshot](Screenshot.png)
+<img src="Screenshot.png" style="max-width: 300px">
 
 
 #### but y make this, tho?

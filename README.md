@@ -1,7 +1,7 @@
 # arXiv-R
 ### an unofficial android app
 
-**Development on hold until arXiv 2.0 API changes complete**
+**Development on hold until arXiv 2.0 API changes are completed**
 
 <img src="Screenshot.png" width=300px>
 

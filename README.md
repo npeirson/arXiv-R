@@ -1,17 +1,14 @@
 # arXiv-R
 ### an unofficial android app
 
-**Development ceased shortly before arXiv 2.0 changed their API. Maybe I'll pick it up again once they're closer to completion.**
+**Development on hold until arXiv 2.0 API changes complete**
 
 <img src="Screenshot.png" width=300px>
 
 
 #### but y make this, tho?
 The existing arXiv app doesn't have the functions I want, so I'm making this.
-
-It's far from done, I assure you.
-
-Also, this is my first project in Java, so code tips and suggestions are very welcome.
+This is my first project in Java, so code tips and suggestions are very welcome.
 
 #### Currently working on:
 - "More articles" card
